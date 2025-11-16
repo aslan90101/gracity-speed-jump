@@ -9,6 +9,7 @@ local LocalPlayer = Players.LocalPlayer
 local isAiming = false
 local currentTarget = nil
 local aimButton = nil
+local isAimButtonPressed = false
 
 -- Функция для поиска ближайшего игрока
 local function findClosestPlayer()
@@ -136,6 +137,7 @@ local function createAimButton()
     aimButton.TextScaled = true
     aimButton.Font = Enum.Font.GothamBold
     aimButton.TextStrokeTransparency = 0.5
+    aimButton.Modal = false -- Важно: позволяет другим элементам получать ввод
     
     -- Стилизация кнопки
     local corner = Instance.new("UICorner")
@@ -151,30 +153,46 @@ local function createAimButton()
     
     -- Обработчики для мобильных устройств
     local touchStartTime = 0
+    local longPressActive = false
     
-    aimButton.TouchTap:Connect(function()
-        startAim()
-        wait(0.1)
-        stopAim()
-    end)
-    
-    aimButton.TouchLongPress:Connect(function()
-        startAim()
-    end)
-    
-    -- Для долгого нажатия
-    aimButton.TouchStarted:Connect(function()
-        touchStartTime = tick()
-    end)
-    
-    aimButton.TouchEnded:Connect(function()
-        if tick() - touchStartTime > 0.5 then
-            -- Долгое нажатие - останавливаем аим
-            stopAim()
+    -- Обработка касания кнопки
+    aimButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isAimButtonPressed = true
+            touchStartTime = tick()
+            longPressActive = false
+            
+            -- Запускаем проверку долгого нажатия
+            spawn(function()
+                wait(0.5) -- 0.5 секунды для долгого нажатия
+                if isAimButtonPressed and tick() - touchStartTime >= 0.5 then
+                    longPressActive = true
+                    startAim()
+                end
+            end)
         end
     end)
     
-    -- Анимация при нажатии
+    aimButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isAimButtonPressed = false
+            
+            if longPressActive then
+                -- Если было долгое нажатие, останавливаем аим
+                stopAim()
+                longPressActive = false
+            else
+                -- Короткое нажатие - быстрый аим
+                if tick() - touchStartTime < 0.5 then
+                    startAim()
+                    wait(0.1)
+                    stopAim()
+                end
+            end
+        end
+    end)
+    
+    -- Для ПК - обычное нажатие мышкой
     aimButton.MouseButton1Down:Connect(function()
         local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 110, 0, 55)})
         tween:Play()
@@ -183,6 +201,11 @@ local function createAimButton()
     aimButton.MouseButton1Up:Connect(function()
         local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 120, 0, 60)})
         tween:Play()
+        
+        -- Для ПК - быстрый аим по клику
+        startAim()
+        wait(0.1)
+        stopAim()
     end)
     
     print("Aim button created successfully!")
@@ -201,15 +224,6 @@ UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
     if input.KeyCode == Enum.KeyCode.Q then
         stopAim()
     end
-end)
-
--- Обработка тапов на экране (альтернативный способ)
-UserInputService.TouchStarted:Connect(function(touch, gameProcessedEvent)
-    if gameProcessedEvent then return end
-end)
-
-UserInputService.TouchEnded:Connect(function(touch, gameProcessedEvent)
-    if gameProcessedEvent then return end
 end)
 
 -- Автоматическое создание кнопки при загрузке
