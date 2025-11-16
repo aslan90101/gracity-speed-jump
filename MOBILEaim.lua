@@ -34,24 +34,33 @@ local function findClosestPlayer()
     return closestPlayer
 end
 
--- Функция для плавного наведения камеры на цель
+-- Функция для наведения камеры на цель
 local function aimAtTarget(target)
     if not target or not target.Character or not target.Character:FindFirstChild("Head") then
         return false
     end
     
     local targetPosition = target.Character.Head.Position
-    local currentCFrame = Camera.CFrame
-    
-    -- Плавное перемещение камеры
-    local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local goal = {}
-    goal.CFrame = CFrame.new(currentCFrame.Position, targetPosition)
-    
-    local tween = TweenService:Create(Camera, tweenInfo, goal)
-    tween:Play()
-    
+    Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
     return true
+end
+
+-- Функция для автоматического нажатия (стрельбы)
+local function simulateShot()
+    local character = LocalPlayer.Character
+    if character then
+        -- Пытаемся найти инструмент и активировать его
+        local tool = character:FindFirstChildOfClass("Tool")
+        if tool then
+            tool:Activate()
+        end
+        
+        -- Симуляция клика мыши для стрельбы
+        local virtualInput = game:GetService("VirtualInputManager")
+        virtualInput:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+        wait(0.05)
+        virtualInput:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+    end
 end
 
 -- Функция для начала аима
@@ -67,6 +76,16 @@ local function startAim()
             aimButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
             aimButton.Text = "AIMING"
         end
+        
+        -- Наводимся на цель
+        aimAtTarget(currentTarget)
+        
+        -- Ждем немного для точности
+        wait(0.05)
+        
+        -- АВТОМАТИЧЕСКОЕ НАЖАТИЕ после наводки
+        simulateShot()
+        
     else
         if aimButton then
             aimButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
@@ -112,7 +131,7 @@ local function createAimButton()
     -- Создаем ScreenGui
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "AimBotGui"
-    screenGui.DisplayOrder = 100  -- Высокий приоритет
+    screenGui.DisplayOrder = 100
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = playerGui
@@ -121,7 +140,7 @@ local function createAimButton()
     aimButton = Instance.new("TextButton")
     aimButton.Name = "AimButton"
     aimButton.Size = UDim2.new(0, 150, 0, 70)
-    aimButton.Position = UDim2.new(1, -160, 0, 20) -- Верхний правый угол
+    aimButton.Position = UDim2.new(1, -160, 0, 20)
     aimButton.AnchorPoint = Vector2.new(1, 0)
     aimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     aimButton.BackgroundTransparency = 0.2
@@ -133,7 +152,7 @@ local function createAimButton()
     aimButton.Modal = false
     aimButton.Active = true
     aimButton.Selectable = true
-    aimButton.AutoButtonColor = false -- Важно: предотвращает автоматическое поведение кнопки
+    aimButton.AutoButtonColor = false
     
     -- Стилизация кнопки
     local corner = Instance.new("UICorner")
@@ -145,14 +164,6 @@ local function createAimButton()
     stroke.Thickness = 3
     stroke.Parent = aimButton
     
-    -- Добавляем затемнение для лучшей видимости
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    })
-    gradient.Parent = aimButton
-    
     aimButton.Parent = screenGui
     
     -- Переменные для отслеживания касаний
@@ -163,7 +174,6 @@ local function createAimButton()
     -- Обработка начала касания кнопки
     aimButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch then
-            -- Останавливаем распространение события
             currentTouchInput = input
             isAimButtonPressed = true
             touchStartTime = tick()
@@ -178,19 +188,12 @@ local function createAimButton()
             
             -- Запускаем проверку долгого нажатия
             spawn(function()
-                wait(0.3) -- 0.3 секунды для долгого нажатия
+                wait(0.3)
                 if isAimButtonPressed and tick() - touchStartTime >= 0.3 then
                     longPressActive = true
                     startAim()
                 end
             end)
-        end
-    end)
-    
-    -- Обработка движения касания
-    aimButton.InputChanged:Connect(function(input)
-        if input == currentTouchInput then
-            -- Ничего не делаем, просто отслеживаем
         end
     end)
     
@@ -212,9 +215,12 @@ local function createAimButton()
                 stopAim()
                 longPressActive = false
             else
-                -- Короткое нажатие - быстрый аим
+                -- Короткое нажатие - быстрый аим с авто-нажатием
                 if tick() - touchStartTime < 0.3 then
                     startAim()
+                    -- Автоматически останавливаем аим после выстрела
+                    wait(0.1)
+                    stopAim()
                 end
             end
         end
@@ -230,23 +236,18 @@ end
 
 -- Основная инициализация
 local function initialize()
-    -- Проверяем, что это мобильное устройство
     if not isMobile() then
         print("This script is for mobile devices only!")
         return
     end
     
-    -- Ждем пока игрок полностью загрузится
     if not LocalPlayer.Character then
         LocalPlayer.CharacterAdded:Wait()
     end
     
-    wait(3) -- Даем больше времени на загрузку
-    
-    -- Создаем кнопку
+    wait(3)
     createAimButton()
-    
-    print("Mobile AimBot initialized!")
+    print("Mobile AimBot with auto-shot initialized!")
 end
 
 -- Запускаем инициализацию
@@ -263,9 +264,7 @@ end)
 -- Обновление камеры при активном аиме
 RunService.Heartbeat:Connect(function()
     if isAiming and currentTarget then
-        -- Просто наводим камеру на цель, без автоматических действий
         if not aimAtTarget(currentTarget) then
-            -- Если цель потеряна, останавливаем аим
             stopAim()
         end
     end
