@@ -112,19 +112,21 @@ local function createAimButton()
     -- Создаем ScreenGui
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "AimBotGui"
-    screenGui.DisplayOrder = 100  -- Высокий приоритет
+    screenGui.DisplayOrder = 100
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = playerGui
     
-    -- Создаем кнопку (в левой части экрана, выше контроллера ходьбы)
+    -- Создаем кнопку в левой части экрана
     aimButton = Instance.new("TextButton")
     aimButton.Name = "AimButton"
-    aimButton.Size = UDim2.new(0, 140, 0, 65) -- Немного меньше для удобства
-    aimButton.Position = UDim2.new(0, 20, 0, 100) -- Левый верхний угол, ниже чем обычно
+    aimButton.Size = UDim2.new(0, 120, 0, 60)
+    
+    -- Позиция: левая сторона, выше контроллера ходьбы
+    aimButton.Position = UDim2.new(0, 30, 0, 50) -- 30 от левого края, 50 от верхнего
     aimButton.AnchorPoint = Vector2.new(0, 0)
     aimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    aimButton.BackgroundTransparency = 0.2
+    aimButton.BackgroundTransparency = 0.3
     aimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     aimButton.Text = "AIM"
     aimButton.TextScaled = true
@@ -133,8 +135,8 @@ local function createAimButton()
     aimButton.Modal = false
     aimButton.Active = true
     aimButton.Selectable = true
-    aimButton.AutoButtonColor = false -- Важно: предотвращает автоматическое поведение кнопки
-    aimButton.ZIndex = 10
+    aimButton.AutoButtonColor = false
+    aimButton.ZIndex = 100
     
     -- Стилизация кнопки
     local corner = Instance.new("UICorner")
@@ -143,16 +145,21 @@ local function createAimButton()
     
     local stroke = Instance.new("UIStroke")
     stroke.Color = Color3.fromRGB(255, 255, 255)
-    stroke.Thickness = 3
+    stroke.Thickness = 2
     stroke.Parent = aimButton
     
-    -- Добавляем затемнение для лучшей видимости
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    })
-    gradient.Parent = aimButton
+    -- Добавляем тень для лучшей видимости
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Size = UDim2.new(1, 10, 1, 10)
+    shadow.Position = UDim2.new(0, -5, 0, -5)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.8
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+    shadow.Parent = aimButton
     
     aimButton.Parent = screenGui
     
@@ -164,7 +171,6 @@ local function createAimButton()
     -- Обработка начала касания кнопки
     aimButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch then
-            -- Останавливаем распространение события
             currentTouchInput = input
             isAimButtonPressed = true
             touchStartTime = tick()
@@ -172,26 +178,19 @@ local function createAimButton()
             
             -- Анимация нажатия
             local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
-                Size = UDim2.new(0, 130, 0, 60),
-                BackgroundTransparency = 0.1
+                Size = UDim2.new(0, 110, 0, 55),
+                BackgroundTransparency = 0.2
             })
             tween:Play()
             
             -- Запускаем проверку долгого нажатия
             spawn(function()
-                wait(0.3) -- 0.3 секунды для долгого нажатия
+                wait(0.3)
                 if isAimButtonPressed and tick() - touchStartTime >= 0.3 then
                     longPressActive = true
                     startAim()
                 end
             end)
-        end
-    end)
-    
-    -- Обработка движения касания
-    aimButton.InputChanged:Connect(function(input)
-        if input == currentTouchInput then
-            -- Ничего не делаем, просто отслеживаем
         end
     end)
     
@@ -203,17 +202,15 @@ local function createAimButton()
             
             -- Анимация отпускания
             local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
-                Size = UDim2.new(0, 140, 0, 65),
-                BackgroundTransparency = 0.2
+                Size = UDim2.new(0, 120, 0, 60),
+                BackgroundTransparency = 0.3
             })
             tween:Play()
             
             if longPressActive then
-                -- Если было долгое нажатие, останавливаем аим
                 stopAim()
                 longPressActive = false
             else
-                -- Короткое нажатие - быстрый аим
                 if tick() - touchStartTime < 0.3 then
                     startAim()
                 end
@@ -221,33 +218,26 @@ local function createAimButton()
         end
     end)
     
-    print("Aim button created successfully in left side!")
+    print("Aim button created in left side!")
 end
 
--- Функция для проверки платформы (только мобильные устройства)
+-- Функция для проверки платформы
 local function isMobile()
     return UserInputService.TouchEnabled
 end
 
 -- Основная инициализация
 local function initialize()
-    -- Проверяем, что это мобильное устройство
     if not isMobile() then
-        print("This script is for mobile devices only!")
         return
     end
     
-    -- Ждем пока игрок полностью загрузится
     if not LocalPlayer.Character then
         LocalPlayer.CharacterAdded:Wait()
     end
     
-    wait(3) -- Даем больше времени на загрузку
-    
-    -- Создаем кнопку
+    wait(2)
     createAimButton()
-    
-    print("Mobile AimBot initialized!")
 end
 
 -- Запускаем инициализацию
@@ -255,7 +245,7 @@ spawn(initialize)
 
 -- Создаем кнопку при появлении нового персонажа
 LocalPlayer.CharacterAdded:Connect(function(character)
-    wait(3)
+    wait(2)
     if isMobile() then
         createAimButton()
     end
@@ -264,28 +254,11 @@ end)
 -- Обновление камеры при активном аиме
 RunService.Heartbeat:Connect(function()
     if isAiming and currentTarget then
-        -- Просто наводим камеру на цель, без автоматических действий
         if not aimAtTarget(currentTarget) then
-            -- Если цель потеряна, останавливаем аим
             stopAim()
         end
     end
 end)
-
--- Очистка при выходе из игры
-game:GetService("CoreGui").DescendantRemoving:Connect(function(descendant)
-    if descendant == aimButton then
-        aimButton = nil
-    end
-end)
-
--- Защита от множественного запуска
-if _G.MobileAimBotLoaded then
-    script:Destroy()
-    return
-end
-
-_G.MobileAimBotLoaded = true
 
 -- Пересоздаем кнопку если она пропала
 while true do
