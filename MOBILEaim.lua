@@ -128,8 +128,8 @@ local function createAimButton()
     aimButton = Instance.new("TextButton")
     aimButton.Name = "AimButton"
     aimButton.Size = UDim2.new(0, 120, 0, 60)
-    aimButton.Position = UDim2.new(0, 20, 0.5, -30)
-    aimButton.AnchorPoint = Vector2.new(0, 0.5)
+    aimButton.Position = UDim2.new(1, -140, 0.5, -30) -- Правая сторона экрана
+    aimButton.AnchorPoint = Vector2.new(1, 0.5)
     aimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     aimButton.BackgroundTransparency = 0.3
     aimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -138,6 +138,8 @@ local function createAimButton()
     aimButton.Font = Enum.Font.GothamBold
     aimButton.TextStrokeTransparency = 0.5
     aimButton.Modal = false -- Важно: позволяет другим элементам получать ввод
+    aimButton.Active = true
+    aimButton.Selectable = true
     
     -- Стилизация кнопки
     local corner = Instance.new("UICorner")
@@ -151,16 +153,25 @@ local function createAimButton()
     
     aimButton.Parent = screenGui
     
-    -- Обработчики для мобильных устройств
+    -- Переменные для отслеживания касаний
     local touchStartTime = 0
     local longPressActive = false
+    local currentTouchInput = nil
     
-    -- Обработка касания кнопки
+    -- Обработка начала касания кнопки
     aimButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch then
+            currentTouchInput = input
             isAimButtonPressed = true
             touchStartTime = tick()
             longPressActive = false
+            
+            -- Анимация нажатия
+            local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
+                Size = UDim2.new(0, 110, 0, 55),
+                BackgroundTransparency = 0.2
+            })
+            tween:Play()
             
             -- Запускаем проверку долгого нажатия
             spawn(function()
@@ -173,9 +184,18 @@ local function createAimButton()
         end
     end)
     
+    -- Обработка окончания касания кнопки
     aimButton.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.Touch and input == currentTouchInput then
+            currentTouchInput = nil
             isAimButtonPressed = false
+            
+            -- Анимация отпускания
+            local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
+                Size = UDim2.new(0, 120, 0, 60),
+                BackgroundTransparency = 0.3
+            })
+            tween:Play()
             
             if longPressActive then
                 -- Если было долгое нажатие, останавливаем аим
@@ -194,12 +214,18 @@ local function createAimButton()
     
     -- Для ПК - обычное нажатие мышкой
     aimButton.MouseButton1Down:Connect(function()
-        local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 110, 0, 55)})
+        local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
+            Size = UDim2.new(0, 110, 0, 55),
+            BackgroundTransparency = 0.2
+        })
         tween:Play()
     end)
     
     aimButton.MouseButton1Up:Connect(function()
-        local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 120, 0, 60)})
+        local tween = TweenService:Create(aimButton, TweenInfo.new(0.1), {
+            Size = UDim2.new(0, 120, 0, 60),
+            BackgroundTransparency = 0.3
+        })
         tween:Play()
         
         -- Для ПК - быстрый аим по клику
@@ -223,6 +249,31 @@ end)
 UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
     if input.KeyCode == Enum.KeyCode.Q then
         stopAim()
+    end
+end)
+
+-- Функция для проверки, находится ли касание в области джойстика
+local function isTouchInJoystickArea(touchPosition)
+    -- Предполагаем, что джойстик находится в левой части экрана
+    local screenSize = Camera.ViewportSize
+    local joystickArea = {
+        X = {0, screenSize.X * 0.4},  -- Левые 40% экрана
+        Y = {screenSize.Y * 0.4, screenSize.Y * 0.8}  -- Центральная часть по вертикали
+    }
+    
+    return touchPosition.X >= joystickArea.X[1] and 
+           touchPosition.X <= joystickArea.X[2] and
+           touchPosition.Y >= joystickArea.Y[1] and 
+           touchPosition.Y <= joystickArea.Y[2]
+end
+
+-- Обработчик для пропуска касаний в области джойстика
+UserInputService.TouchStarted:Connect(function(touch, gameProcessedEvent)
+    if gameProcessedEvent then return end
+    
+    -- Если касание в области джойстика, не обрабатываем его
+    if isTouchInJoystickArea(touch.Position) then
+        return
     end
 end)
 
@@ -267,3 +318,11 @@ game:GetService("CoreGui").DescendantRemoving:Connect(function(descendant)
         aimButton = nil
     end
 end)
+
+-- Дополнительная защита: пересоздаем кнопку если она была удалена
+while true do
+    wait(10)
+    if not aimButton or not aimButton.Parent then
+        createAimButton()
+    end
+end
