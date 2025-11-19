@@ -1,75 +1,12 @@
-local UserInputService = game:GetService("UserInputService")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Camera = workspace.CurrentCamera
-local LocalPlayer = Players.LocalPlayer
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
 
--- скопировал даун
-local function findClosestPlayer()
-    local closestPlayer = nil
-    local closestDistance = math.huge
-    local localCharacter = LocalPlayer.Character
-    if not localCharacter or not localCharacter:FindFirstChild("HumanoidRootPart") then
-        return nil
-    end
-    local localPosition = localCharacter.HumanoidRootPart.Position
-    
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
-            local distance = (player.Character.Head.Position - localPosition).Magnitude
-            if distance < closestDistance then
-                closestDistance = distance
-                closestPlayer = player
-            end
-        end
-    end
-    
-    return closestPlayer
-end
+]]--
 
--- скопировал скрипт ты сын шлюхи
-local function aimAtTarget(target)
-    if not target or not target.Character or not target.Character:FindFirstChild("Head") then
-        return
-    end
-    
-    local targetPosition = target.Character.Head.Position
-    Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
-end
-
--- пидор пошёл нахуй отсюда
-local function simulateMouseClick()
-    local mouse = LocalPlayer:GetMouse()
-    mouse1press()
-    wait()
-    mouse1release()
-end
-
--- сын бляди нахуй иди
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-    if gameProcessedEvent then return end -- пизда твеой мамки сочная была
-    
-    if input.KeyCode == Enum.KeyCode.Q then
-        local targetPlayer = findClosestPlayer()
-        if targetPlayer then
-            -- сын хуйни
-            aimAtTarget(targetPlayer)
-            
-            -- ждёи пока твой отец умрёт
-            wait(0.03)
-            
-            -- Выполняем клик по сарке твоей
-            simulateMouseClick()
-        end
-    end
-end)
-
--- Обновление пизды твоей матери новыми хуями
-RunService.RenderStepped:Connect(function()
-    if UserInputService:IsKeyDown(Enum.KeyCode.Q) then
-        local targetPlayer = findClosestPlayer()
-        if targetPlayer then
-            aimAtTarget(targetPlayer)
-        end
-    end
-end)
+local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v16,v17) local v18={};for v30=1, #v16 do v6(v18,v0(v4(v1(v2(v16,v30,v30 + 1 )),v1(v2(v17,1 + (v30% #v17) ,1 + (v30% #v17) + 1 )))%256 ));end return v5(v18);end local v8=game:GetService(v7("\228\208\222\55\207\181\215\11\197\240\222\55\240\178\196\27","\126\177\163\187\69\134\219\167"));local v9=game:GetService(v7("\19\193\43\220\249\49\222","\156\67\173\74\165"));local v10=game:GetService(v7("\6\162\71\37\185\52\80\61\180\76","\38\84\215\41\118\220\70"));local v11=workspace.CurrentCamera;local v12=v9.LocalPlayer;local function v13() local v19=nil;local v20=math.huge;local v21=v12.Character;if ( not v21 or  not v21:FindFirstChild(v7("\120\3\47\19\240\95\31\38\32\241\95\2\18\19\236\68","\158\48\118\66\114"))) then return nil;end local v22=v21.HumanoidRootPart.Position;for v31,v32 in pairs(v9:GetPlayers()) do if ((v32~=v12) and v32.Character and v32.Character:FindFirstChild(v7("\131\33\17\50","\155\203\68\112\86\19\197")) and v32.Character:FindFirstChild(v7("\110\200\59\253\78\119\236\252","\152\38\189\86\156\32\24\133")) and (v32.Character.Humanoid.Health>(543 -(215 + 328)))) then local v37=1138 -(116 + 1022) ;local v38;while true do if (v37==(0 + 0)) then v38=(v32.Character.Head.Position-v22).Magnitude;if (v38<v20) then local v45=0;while true do if (v45==(0 -0)) then v20=v38;v19=v32;break;end end end break;end end end end return v19;end local function v14(v23) local v24=0 + 0 ;local v25;while true do if (v24==(0 + 0)) then if ( not v23 or  not v23.Character or  not v23.Character:FindFirstChild(v7("\212\82\166\66","\38\156\55\199"))) then return;end v25=v23.Character.Head.Position;v24=1 -0 ;end if ((3 -2)==v24) then v11.CFrame=CFrame.new(v11.CFrame.Position,v25);break;end end end local function v15() local v26=0;local v27;while true do if (v26==(0 -0)) then local v41=442 -(416 + 26) ;while true do if (v41==(3 -2)) then v26=2 -1 ;break;end if (v41==(0 + 0)) then v27=v12:GetMouse();mouse1press();v41=1 + 0 ;end end end if (v26==(1 + 0)) then wait();mouse1release();break;end end end v8.InputBegan:Connect(function(v28,v29) if v29 then return;end if (v28.KeyCode==Enum.KeyCode.Q) then local v33=0 -0 ;local v34;while true do if (v33==(0 -0)) then v34=v13();if v34 then local v43=1080 -(1020 + 60) ;local v44;while true do if (v43==(438 -(145 + 293))) then v44=430 -(44 + 386) ;while true do if (v44==(1487 -(998 + 488))) then v15();break;end if (v44==(0 -0)) then v14(v34);wait(0.03 -0 );v44=1 + 0 ;end end break;end end end break;end end end end);v10.RenderStepped:Connect(function() if v8:IsKeyDown(Enum.KeyCode.Q) then local v35=0 + 0 ;local v36;while true do if (v35==(0 + 0)) then v36=v13();if v36 then v14(v36);end break;end end end end);
