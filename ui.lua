@@ -987,7 +987,6 @@ function Kavo.CreateLib(kavName, themeList)
                     local toggleEnabled = Instance.new("ImageLabel")
                     local togName = Instance.new("TextLabel")
                     local viewInfo = Instance.new("ImageButton")
-                    local Sample = Instance.new("ImageLabel")
 
                     toggleElement.Name = "toggleElement"
                     toggleElement.Parent = sectionInners
@@ -1051,14 +1050,6 @@ function Kavo.CreateLib(kavName, themeList)
                     viewInfo.ImageRectOffset = Vector2.new(764, 764)
                     viewInfo.ImageRectSize = Vector2.new(36, 36)
 
-                    Sample.Name = "Sample"
-                    Sample.Parent = toggleElement
-                    Sample.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    Sample.BackgroundTransparency = 1.000
-                    Sample.Image = "http://www.roblox.com/asset/?id=4560909609"
-                    Sample.ImageColor3 = themeList.SchemeColor
-                    Sample.ImageTransparency = 0.600
-
                     local moreInfo = Instance.new("TextLabel")
                     local UICorner = Instance.new("UICorner")
     
@@ -1078,8 +1069,6 @@ function Kavo.CreateLib(kavName, themeList)
                     UICorner.CornerRadius = UDim.new(0, 4)
                     UICorner.Parent = moreInfo
 
-                    local ms = game.Players.LocalPlayer:GetMouse()
-
                     if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
                         Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
                     end 
@@ -1088,58 +1077,24 @@ function Kavo.CreateLib(kavName, themeList)
                     end 
 
                     local btn = toggleElement
-                    local sample = Sample
                     local img = toggleEnabled
                     local infBtn = viewInfo
 
-                                    updateSectionFrame()
-                UpdateSize()
+                    updateSectionFrame()
+                    UpdateSize()
 
                     btn.MouseButton1Click:Connect(function()
                         if not focusing then
-                            if toggled == false then
-                                game.TweenService:Create(img, TweenInfo.new(0.11, Enum.EasingStyle.Linear,Enum.EasingDirection.In), {
-                                    ImageTransparency = 0
-                                }):Play()
-                                local c = sample:Clone()
-                                c.Parent = btn
-                                local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                                c.Position = UDim2.new(0, x, 0, y)
-                                local len, size = 0.35, nil
-                                if btn.AbsoluteSize.X >= btn.AbsoluteSize.Y then
-                                    size = (btn.AbsoluteSize.X * 1.5)
-                                else
-                                    size = (btn.AbsoluteSize.Y * 1.5)
-                                end
-                                c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                                for i = 1, 10 do
-                                    c.ImageTransparency = c.ImageTransparency + 0.05
-                                    wait(len / 12)
-                                end
-                                c:Destroy()
-                            else
-                                game.TweenService:Create(img, TweenInfo.new(0.11, Enum.EasingStyle.Linear,Enum.EasingDirection.In), {
-                                    ImageTransparency = 1
-                                }):Play()
-                                local c = sample:Clone()
-                                c.Parent = btn
-                                local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                                c.Position = UDim2.new(0, x, 0, y)
-                                local len, size = 0.35, nil
-                                if btn.AbsoluteSize.X >= btn.AbsoluteSize.Y then
-                                    size = (btn.AbsoluteSize.X * 1.5)
-                                else
-                                    size = (btn.AbsoluteSize.Y * 1.5)
-                                end
-                                c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                                for i = 1, 10 do
-                                    c.ImageTransparency = c.ImageTransparency + 0.05
-                                    wait(len / 12)
-                                end
-                                c:Destroy()
-                            end
+                            -- Сначала меняем состояние и вызываем callback
                             toggled = not toggled
                             pcall(callback, toggled)
+                            
+                            -- Затем меняем видимость иконки без анимации
+                            if toggled then
+                                img.ImageTransparency = 0
+                            else
+                                img.ImageTransparency = 1
+                            end
                         else
                             for i,v in next, infoContainer:GetChildren() do
                                 Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
@@ -1148,6 +1103,7 @@ function Kavo.CreateLib(kavName, themeList)
                             Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                         end
                     end)
+                    
                     local hovering = false
                     btn.MouseEnter:Connect(function()
                         if not focusing then
@@ -1157,6 +1113,7 @@ function Kavo.CreateLib(kavName, themeList)
                             hovering = true
                         end 
                     end)
+                    
                     btn.MouseLeave:Connect(function()
                         if not focusing then
                             game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
@@ -1175,11 +1132,11 @@ function Kavo.CreateLib(kavName, themeList)
                             toggleEnabled.ImageColor3 = themeList.SchemeColor
                             togName.TextColor3 = themeList.TextColor
                             viewInfo.ImageColor3 = themeList.SchemeColor
-                            Sample.ImageColor3 = themeList.SchemeColor
                             moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
                             moreInfo.TextColor3 = themeList.TextColor
                         end
                     end)()
+                    
                     viewInfo.MouseButton1Click:Connect(function()
                         if not viewDe then
                             viewDe = true
@@ -1200,27 +1157,25 @@ function Kavo.CreateLib(kavName, themeList)
                             viewDe = false
                         end
                     end)
+                    
                     function TogFunction:UpdateToggle(newText, isTogOn)
-                        isTogOn = isTogOn or toggle
+                        isTogOn = isTogOn or toggled
                         if newText ~= nil then 
                             togName.Text = newText
                         end
                         if isTogOn then
                             toggled = true
-                            game.TweenService:Create(img, TweenInfo.new(0.11, Enum.EasingStyle.Linear,Enum.EasingDirection.In), {
-                                ImageTransparency = 0
-                            }):Play()
+                            img.ImageTransparency = 0
                             pcall(callback, toggled)
                         else
                             toggled = false
-                            game.TweenService:Create(img, TweenInfo.new(0.11, Enum.EasingStyle.Linear,Enum.EasingDirection.In), {
-                                ImageTransparency = 1
-                            }):Play()
+                            img.ImageTransparency = 1
                             pcall(callback, toggled)
                         end
                     end
+                    
                     return TogFunction
-            end
+                end
 
             function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, callback)
                 slidInf = slidInf or "Slider"
