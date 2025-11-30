@@ -2475,138 +2475,141 @@ function Kavo.CreateLib(kavName, themeList)
         return Sections
     end  
     return Tabs
-	--// === КРАСИВЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ (Standart / Light / Dark) ===
-	local ThemeSelector = Instance.new("Frame")
-	local ThemeCorner = Instance.new("UICorner")
-	local ThemeButton = Instance.new("TextButton")
-	local ThemeList = Instance.new("Frame")
+	--// === ОТДЕЛЬНАЯ ПАНЕЛЬ ВЫБОРА ТЕМЫ (справа от меню) ===
+	local ThemePanel = Instance.new("Frame")
+	local ThemePanelCorner = Instance.new("UICorner")
+	local ThemeTitle = Instance.new("TextLabel")
+	local ThemeClose = Instance.new("ImageButton")
+	local ThemeListFrame = Instance.new("Frame")
 	local ThemeListLayout = Instance.new("UIListLayout")
-	local ThemeOpen = false
 	
-	ThemeSelector.Name = "ThemeSelector"
-	ThemeSelector.Parent = MainHeader
-	ThemeSelector.BackgroundColor3 = themeList.SchemeColor
-	ThemeSelector.Position = UDim2.new(0.75, 0, 0.1, 0)
-	ThemeSelector.Size = UDim2.new(0, 140, 0, 26)
-	ThemeSelector.ZIndex = 10
+	ThemePanel.Name = "ThemePanel"
+	ThemePanel.Parent = Main
+	ThemePanel.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+	ThemePanel.Position = UDim2.new(1, 8, 0, 0)  -- справа от меню + отступ 8px
+	ThemePanel.Size = UDim2.new(0, 180, 0, 318)
+	ThemePanel.Visible = true
+	ThemePanel.ClipsDescendants = true
+	ThemePanel.ZIndex = 50
 	
-	ThemeCorner.CornerRadius = UDim.new(0, 6)
-	ThemeCorner.Parent = ThemeSelector
+	ThemePanelCorner.CornerRadius = UDim.new(0, 8)
+	ThemePanelCorner.Parent = ThemePanel
 	
-	ThemeButton.Name = "ThemeButton"
-	ThemeButton.Parent = ThemeSelector
-	ThemeButton.BackgroundTransparency = 1
-	ThemeButton.Size = UDim2.new(1, 0, 1, 0)
-	ThemeButton.Font = Enum.Font.GothamBold
-	ThemeButton.Text = "Standart"
-	ThemeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ThemeButton.TextSize = 13
-	ThemeButton.ZIndex = 11
+	ThemeTitle.Name = "ThemeTitle"
+	ThemeTitle.Parent = ThemePanel
+	ThemeTitle.BackgroundTransparency = 1
+	ThemeTitle.Position = UDim2.new(0, 12, 0, 8)
+	ThemeTitle.Size = UDim2.new(1, -50, 0, 30)
+	ThemeTitle.Font = Enum.Font.GothamBold
+	ThemeTitle.Text = "Themes"
+	ThemeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ThemeTitle.TextSize = 16
+	ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
+	ThemeTitle.ZIndex = 51
 	
-	ThemeList.Name = "ThemeList"
-	ThemeList.Parent = ThemeSelector
-	ThemeList.BackgroundColor3 = themeList.Background
-	ThemeList.BorderSizePixel = 0
-	ThemeList.Position = UDim2.new(0, 0, 1, 4)
-	ThemeList.Size = UDim2.new(1, 0, 0, 0)
-	ThemeList.Visible = false
-	ThemeList.ZIndex = 12
-	ThemeList.ClipsDescendants = true
+	ThemeClose.Name = "ThemeClose"
+	ThemeClose.Parent = ThemePanel
+	ThemeClose.BackgroundTransparency = 1
+	ThemeClose.Position = UDim2.new(1, -28, 0, 8)
+	ThemeClose.Size = UDim2.new(0, 20, 0, 20)
+	ThemeClose.Image = "rbxassetid://6031094678"  -- крестик
+	ThemeClose.ZIndex = 52
+	ThemeClose.MouseButton1Click:Connect(function()
+	    ThemePanel:TweenPosition(UDim2.new(1, 8, 0, 0), "Out", "Quart", 0.4, true)
+	    wait(0.4)
+	    ThemePanel.Visible = false
+	end)
 	
-	local ListCorner = Instance.new("UICorner")
-	ListCorner.CornerRadius = UDim.new(0, 6)
-	ListCorner.Parent = ThemeList
+	ThemeListFrame.Name = "ThemeListFrame"
+	ThemeListFrame.Parent = ThemePanel
+	ThemeListFrame.BackgroundTransparency = 1
+	ThemeListFrame.Position = UDim2.new(0, 8, 0, 45)
+	ThemeListFrame.Size = UDim2.new(1, -16, 1, -55)
 	
-	ThemeListLayout.Parent = ThemeList
+	ThemeListLayout.Parent = ThemeListFrame
+	ThemeListLayout.Padding = UDim.new(0, 6)
 	ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	ThemeListLayout.Padding = UDim.new(0, 2)
 	
-	local themes = {
-	    Standart = { -- текущая тема по умолчанию
-	        SchemeColor = Color3.fromRGB(74, 99, 135),
-	        Background = Color3.fromRGB(36, 37, 43),
-	        Header = Color3.fromRGB(28, 29, 34),
-	        TextColor = Color3.fromRGB(255,255,255),
-	        ElementColor = Color3.fromRGB(32, 32, 38)
-	    },
-	    Light = {
-	        SchemeColor = Color3.fromRGB(100, 149, 237),
-	        Background = Color3.fromRGB(248, 248, 248),
-	        Header = Color3.fromRGB(230, 230, 230),
-	        TextColor = Color3.fromRGB(40, 40, 40),
-	        ElementColor = Color3.fromRGB(255, 255, 255)
-	    },
-	    Dark = {
-	        SchemeColor = Color3.fromRGB(138, 43, 226),
-	        Background = Color3.fromRGB(18, 18, 18),
-	        Header = Color3.fromRGB(10, 10, 10),
-	        TextColor = Color3.fromRGB(230, 230, 230),
-	        ElementColor = Color3.fromRGB(28, 28, 28)
-	    }
+	-- Список тем (добавь свои, сколько хочешь)
+	local ThemePresets = {
+	    ["Standart"] = { SchemeColor = Color3.fromRGB(74, 99, 135),   Background = Color3.fromRGB(36, 37, 43), Header = Color3.fromRGB(28, 29, 34), TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(32, 32, 38) },
+	    ["Light"]    = { SchemeColor = Color3.fromRGB(100, 149, 237), Background = Color3.fromRGB(248, 248, 248), Header = Color3.fromRGB(230, 230, 230), TextColor = Color3.fromRGB(40,40,40), ElementColor = Color3.fromRGB(255, 255, 255) },
+	    ["Dark"]     = { SchemeColor = Color3.fromRGB(138, 43, 226),  Background = Color3.fromRGB(18, 18, 18), Header = Color3.fromRGB(10, 10, 10), TextColor = Color3.fromRGB(230,230,230), ElementColor = Color3.fromRGB(28, 28, 28) },
+	    ["Blood"]    = { SchemeColor = Color3.fromRGB(220, 20, 60),   Background = Color3.fromRGB(15, 5, 5), Header = Color3.fromRGB(10, 0, 0), TextColor = Color3.fromRGB(255,100,100), ElementColor = Color3.fromRGB(40, 10, 10) },
+	    ["Neon"]     = { SchemeColor = Color3.fromRGB(0, 255, 255),   Background = Color3.fromRGB(0, 10, 20), Header = Color3.fromRGB(0, 20, 40), TextColor = Color3.fromRGB(0, 255, 255), ElementColor = Color3.fromRGB(0, 40, 80) },
+	    ["Grape"]    = { SchemeColor = Color3.fromRGB(186, 85, 211),  Background = Color3.fromRGB(45, 25, 60), Header = Color3.fromRGB(35, 15, 50), TextColor = Color3.fromRGB(220, 180, 255), ElementColor = Color3.fromRGB(70, 40, 90) },
+	    ["Ocean"]    = { SchemeColor = Color3.fromRGB(30, 144, 255),  Background = Color3.fromRGB(10, 25, 50), Header = Color3.fromRGB(15, 35, 70), TextColor = Color3.fromRGB(180, 220, 255), ElementColor = Color3.fromRGB(25, 55, 100) },
 	}
 	
-	-- Создаём кнопки тем
-	for name, data in pairs(themes) do
+	for themeName, colors in pairs(ThemePresets) do
 	    local btn = Instance.new("TextButton")
-	    btn.Name = name
-	    btn.Parent = ThemeList
-	    btn.BackgroundColor3 = data.ElementColor
-	    btn.Size = UDim2.new(1, 0, 0, 28)
+	    btn.Name = themeName
+	    btn.Parent = ThemeListFrame
+	    btn.BackgroundColor3 = colors.ElementColor
+	    btn.Size = UDim2.new(1, 0, 0, 38)
 	    btn.Font = Enum.Font.Gotham
-	    btn.Text = "  " .. name
-	    btn.TextColor3 = data.TextColor
-	    btn.TextXAlignment = Enum.TextXAlignment.Left
-	    btn.TextSize = 13
-	    btn.ZIndex = 13
+	    btn.Text = themeName
+	    btn.TextColor3 = colors.TextColor
+	    btn.TextSize  = 14
+	    btn.ZIndex = 52
 	
 	    local corner = Instance.new("UICorner")
-	    corner.CornerRadius = UDim.new(0, 4)
+	    corner.CornerRadius = UDim.new(0, 6)
 	    corner.Parent = btn
 	
+	    local stroke = Instance.new("UIStroke", btn)
+	    stroke.Thickness = 1
+	    stroke.Color = colors.SchemeColor
+	    stroke.Transparency = 0.7
+	
 	    btn.MouseButton1Click:Connect(function()
-	        -- Применяем тему
-	        for prop, color in pairs(data) do
+	        for prop, color in pairs(colors) do
 	            Kavo:ChangeColor(prop, color)
 	        end
-	        ThemeButton.Text = name
-	        ThemeSelector.BackgroundColor3 = data.SchemeColor
-	        ThemeButton.TextColor3 = if name == "Light" then Color3.fromRGB(30,30,30) else Color3.fromRGB(255,255,255)
-	
-	        -- Анимация закрытия
-	        ThemeList:TweenSize(UDim2.new(1,0,0,0), "Out", "Quad", 0.2, true)
-	        wait(0.2)
-	        ThemeList.Visible = false
-	        ThemeOpen = false
+	        -- плавное появление панели при смене темы (если она закрыта)
+	        if not ThemePanel.Visible then
+	            ThemePanel.Visible = true
+	            ThemePanel.Position = UDim2.new(1, 8, 0, -50)
+	            ThemePanel:TweenPosition(UDim2.new(1, 8, 0, 0), "Out", "Back", 0.5, true)
+	        end
 	    end)
 	
 	    btn.MouseEnter:Connect(function()
-	        tween:Create(btn, tweeninfo(0.15), {BackgroundColor3 = Color3.fromRGB(data.ElementColor.r*255+15, data.ElementColor.g*255+15, data.ElementColor.b*255+15)}):Play()
+	        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = Color3.from(btn.BackgroundColor3.r + 0.1, btn.BackgroundColor3.g + 0.1, btn.BackgroundColor3.b + 0.1)}):Play()
 	    end)
 	    btn.MouseLeave:Connect(function()
-	        tween:Create(btn, tweeninfo(0.15), {BackgroundColor3 = data.ElementColor}):Play()
+	        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = colors.ElementColor}):Play()
 	    end)
 	end
 	
-	-- Открытие/закрытие списка
-	ThemeButton.MouseButton1Click:Connect(function()
-	    ThemeOpen = not ThemeOpen
-	    if ThemeOpen then
-	        ThemeList.Visible = true
-	        ThemeList:TweenSize(UDim2.new(1,0,0,90), "Out", "Quad", 0.25, true)
-	    else
-	        ThemeList:TweenSize(UDim2.new(1,0,0,0), "Out", "Quad", 0.2, true)
-	        wait(0.2)
-	        ThemeList.Visible = false
-	    end
+	-- Кнопка открытия панели тем (маленькая стрелочка слева от панели)
+	local OpenThemeBtn = Instance.new("TextButton")
+	OpenThemeBtn.Name = "OpenThemeBtn"
+	OpenThemeBtn.Parent = Main
+	OpenThemeBtn.BackgroundColor3 = themeList.SchemeColor
+	OpenThemeBtn.Position = UDim2.new(1, -25, 0, 100)
+	OpenThemeBtn.Size = UDim2.new(0, 25, 0, 60)
+	OpenThemeBtn.Text = ">"
+	OpenThemeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+	OpenThemeBtn.Font = Enum.Font.GothamBold
+	OpenThemeBtn.TextSize = 18
+	OpenThemeBtn.ZIndex = 60
+	
+	local openCorner = Instance.new("UICorner", OpenThemeBtn)
+	openCorner.CornerRadius = UDim.new(0, 6)
+	
+	OpenThemeBtn.MouseButton1Click:Connect(function()
+	    ThemePanel.Visible = true
+	    ThemePanel.Position = UDim2.new(1, 8, 0, -50)
+	    ThemePanel:TweenPosition(UDim2.new(1, 8, 0, 0), "Out", "Back", 0.5, true)
 	end)
 	
-	-- Авто-обновление цвета селектора при смене темы извне
+	-- Авто-обновление цвета кнопки открытия
 	coroutine.wrap(function()
-	    while wait(0.5) do
-	        ThemeSelector.BackgroundColor3 = themeList.SchemeColor
-	        ThemeButton.TextColor3 = themeList.TextColor
+	    while wait(0.3) do
+	        OpenThemeBtn.BackgroundColor3 = themeList.SchemeColor
 	    end
 	end)()
-	--// === КОНЕЦ ПЕРЕКЛЮЧАТЕЛЯ ТЕМ ===
+	--// === КОНЕЦ ПАНЕЛИ ТЕМ ===
 end
 return Kavo
