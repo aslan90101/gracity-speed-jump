@@ -2475,92 +2475,102 @@ function Kavo.CreateLib(kavName, themeList)
         return Sections
     end  
     return Tabs
-	--// ===================================================================
-	--// ВТОРАЯ ПАНЕЛЬ С ВЫБОРОМ ТЕМ (справа от основного меню)
-	--// ===================================================================
-	local ThemePanel = Instance.new("Frame")
-	local ThemePanelCorner = Instance.new("UICorner")
-	local ThemeTitle = Instance.new("TextLabel")
-	local ThemeListLayout = Instance.new("UIListLayout")
+    --// ===================================================================
+    --// ПАНЕЛЬ ТЕМ СПРАВА ОТ ОСНОВНОГО МЕНЮ (как ты и хотел)
+    --// ===================================================================
+    local ThemePanel = Instance.new("Frame")
+    local ThemePanelCorner = Instance.new("UICorner")
+    local ThemeTitle = Instance.new("TextLabel")
+    local ThemeListLayout = Instance.new("UIListLayout")
 
-	ThemePanel.Name = "ThemePanel"
-	ThemePanel.Parent = Main
-	ThemePanel.BackgroundColor3 = themeList.Header
-	ThemePanel.Position = UDim2.new(1, 8, 0, 0)        -- чуть правее основного окна
-	ThemePanel.Size = UDim2.new(0, 160, 0, 318)       -- такая же высота как Main
-	ThemePanel.ZIndex = 5
+    ThemePanel.Name = "ThemePanel"
+    ThemePanel.Parent = Main
+    ThemePanel.BackgroundColor3 = themeList.Header
+    ThemePanel.Position = UDim2.new(1, 8, 0, 0)         -- справа с отступом 8px
+    ThemePanel.Size = UDim2.new(0, 160, 0, 318)           -- ширина 160, высота как у Main
+    ThemePanel.ZIndex = 10
 
-	ThemePanelCorner.CornerRadius = UDim.new(0, 6)
-	ThemePanelCorner.Parent = ThemePanel
+    ThemePanelCorner.CornerRadius = UDim.new(0, 6)
+    ThemePanelCorner.Parent = ThemePanel
 
-	ThemeTitle.Name = "ThemeTitle"
-	ThemeTitle.Parent = ThemePanel
-	ThemeTitle.BackgroundTransparency = 1
-	ThemeTitle.Size = UDim2.new(1, 0, 0, 35)
-	ThemeTitle.Font = Enum.Font.GothamBold
-	ThemeTitle.Text = "   Themes"
-	ThemeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ThemeTitle.TextSize = 15
-	ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
+    ThemeTitle.Name = "ThemeTitle"
+    ThemeTitle.Parent = ThemePanel
+    ThemeTitle.BackgroundTransparency = 1
+    ThemeTitle.Size = UDim2.new(1, 0, 0, 35)
+    ThemeTitle.Font = Enum.Font.GothamBold
+    ThemeTitle.Text = "   Themes"
+    ThemeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ThemeTitle.TextSize = 15
+    ThemeTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-	ThemeListLayout.Parent = ThemePanel
-	ThemeListLayout.Padding = UDim.new(0, 6)
-	ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	ThemeListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    ThemeListLayout.Parent = ThemePanel
+    ThemeListLayout.Padding = UDim.new(0, 6)
+    ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    ThemeListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-	--// Список тем (можно добавлять сколько угодно)
-	local AllThemes = {
-		Standart = { SchemeColor = Color3.fromRGB(74, 99, 135),   Background = Color3.fromRGB(36, 37, 43),   Header = Color3.fromRGB(28, 29, 34),   TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(32, 32, 38) },
-		Light    = { SchemeColor = Color3.fromRGB(100, 149, 237), Background = Color3.fromRGB(248, 248, 248), Header = Color3.fromRGB(230, 230, 230), TextColor = Color3.fromRGB(40,40,40),    ElementColor = Color3.fromRGB(255, 255, 255) },
-		Dark     = { SchemeColor = Color3.fromRGB(138, 43, 226),  Background = Color3.fromRGB(18, 18, 18),   Header = Color3.fromRGB(10, 10, 10),   TextColor = Color3.fromRGB(230,230,230), ElementColor = Color3.fromRGB(28, 28, 28) },
-		Blood    = { SchemeColor = Color3.fromRGB(220, 20, 60),   Background = Color3.fromRGB(15, 0, 0),     Header = Color3.fromRGB(10, 0, 0),     TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(30, 0, 0) },
-		Neon     = { SchemeColor = Color3.fromRGB(0, 255, 255),   Background = Color3.fromRGB(0, 10, 20),    Header = Color3.fromRGB(0, 5, 15),     TextColor = Color3.fromRGB(0,255,255),   ElementColor = Color3.fromRGB(0, 30, 50) },
-		Forest   = { SchemeColor = Color3.fromRGB(34, 139, 34),   Background = Color3.fromRGB(20, 30, 20),   Header = Color3.fromRGB(10, 20, 10),   TextColor = Color3.fromRGB(200,255,200), ElementColor = Color3.fromRGB(30, 50, 30) },
-	}
+    --// ТЕМЫ
+    local AllThemes = {
+        Standart = { SchemeColor = Color3.fromRGB(74, 99, 135),   Background = Color3.fromRGB(36, 37, 43),   Header = Color3.fromRGB(28, 29, 34),   TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(32, 32, 38) },
+        Light    = { SchemeColor = Color3.fromRGB(100,149,237),    Background = Color3.fromRGB(248,248,248),   Header = Color3.fromRGB(230,230,230),   TextColor = Color3.fromRGB(40,40,40),    ElementColor = Color3.fromRGB(255,255,255) },
+        Dark     = { SchemeColor = Color3.fromRGB(138, 43,226),   Background = Color3.fromRGB(18,18,18),       Header = Color3.fromRGB(10,10,10),       TextColor = Color3.fromRGB(230,230,230), ElementColor = Color3.fromRGB(28,28,28) },
+        Blood    = { SchemeColor = Color3.fromRGB(220, 20,60),   Background = Color3.fromRGB(15,0,0),        Header = Color3.fromRGB(10,0,0),       TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(30,0,0) },
+        Neon     = { SchemeColor = Color3.fromRGB(0, 255,255),   Background = Color3.fromRGB(0,10,20),       Header = Color3.fromRGB(0,5,15),        TextColor = Color3.fromRGB(0,255,255),   ElementColor = Color3.fromRGB(0,30,50) },
+        Forest   = { SchemeColor = Color3.fromRGB(34,139,34),    Background = Color3.fromRGB(20,30,20),     Header = Color3.fromRGB(10,20,10),        TextColor = Color3.fromRGB(200,255,200), ElementColor = Color3.fromRGB(30,50,30) },
+        Grape    = themeStyles.GrapeTheme,   -- берём из твоих встроенных тем
+        Ocean    = themeStyles.Ocean,
+        Midnight = themeStyles.Midnight,
+        Sentinel = themeStyles.Sentinel,
+    }
 
-	for themeName, colors in pairs(AllThemes) do
-		local btn = Instance.new("TextButton")
-		btn.Name = themeName .. "ThemeBtn"
-		btn.Parent = ThemePanel
-		btn.BackgroundColor3 = colors.ElementColor
-		btn.Size = UDim2.new(0, 140, 0, 34)
-		btn.Font = Enum.Font.Gotham
-		btn.Text = themeName
-		btn.TextColor3 = colors.TextColor
-		btn.TextSize = 14
+    for themeName, colors in pairs(AllThemes) do
+        local btn = Instance.new("TextButton")
+        btn.Name = themeName .. "ThemeBtn"
+        btn.Parent = ThemePanel
+        btn.BackgroundColor3 = colors.ElementColor
+        btn.Size = UDim2.new(0, 140,0, 34)
+        btn.Font = Enum.Font.Gotham
+        btn.Text = themeName
+        btn.TextColor3 = colors.TextColor
+        btn.TextSize = 14
 
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 6)
-		corner.Parent =  = btn
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = btn   -- ← ИСПРАВЛЕНО! Было "= ="
 
-		-- Ховер-эффект
-		btn.MouseEnter:Connect(function()
-			Utility:TweenObject(btn, {BackgroundColor3 = Color3.fromRGB(colors.ElementColor.r*255+20, colors.ElementColor.g*255+20, colors.ElementColor.b*255+20)}, 0.2)
-		end)
-		btn.MouseLeave:Connect(function()
-			Utility:TweenObject(btn, {BackgroundColor3 = colors.ElementColor}, 0.2)
-		end)
+        -- ховер
+        btn.MouseEnter:Connect(function()
+            Utility:TweenObject(btn, {BackgroundColor3 = Color3.fromRGB(
+                math.clamp(colors.ElementColor.R*255 + 20, 0, 255),
+                math.clamp(colors.ElementColor.G*255 + 20, 0, 255),
+                math.clamp(colors.ElementColor.B*255 + 20, 0, 255)
+            )}, 0.2)
+        end)
+        btn.MouseLeave:Connect(function()
+            Utility:TweenObject(btn, {BackgroundColor3 = colors.ElementColor}, 0.2)
+        end)
 
-		-- Применение темы
-		btn.MouseButton1Click:Connect(function()
-			for prop, col in pairs(colors) do
-				Kavo:ChangeColor(prop, col)
-			end
-			-- Обновляем цвет самой панели тем
-			ThemePanel.BackgroundColor3 = colors.Header
-			ThemeTitle.TextColor3 = colors.TextColor
-		end)
-	end
+        -- смена темы
+        btn.MouseButton1Click:Connect(function()
+            for prop, col in pairs(colors) do
+                Kavo:ChangeColor(prop, col)
+            end
+            -- обновляем панель под новую тему
+            ThemePanel.BackgroundColor3 = colors.Header
+            ThemeTitle.TextColor3 = colors.TextColor
+            btn.TextColor3 = colors.TextColor
+        end)
+    end
 
-	-- Автоматическое обновление цвета заголовка панели при смене темы извне
-	coroutine.wrap(function()
-		while wait(0.3) do
-			ThemePanel.BackgroundColor3 = themeList.Header
-			ThemeTitle.TextColor3 = themeList.TextColor
-		end
-	end)()
-	--// ===================================================================
-	--// КОНЕЦ ПАНЕЛИ ТЕМ
-	--// ===================================================================
+    -- авто-обновление цвета панели, если тема меняется извне
+    coroutine.wrap(function()
+        while true do
+            ThemePanel.BackgroundColor3 = themeList.Header
+            ThemeTitle.TextColor3 = themeList.TextColor
+            wait(0.3)
+        end
+    end)()
+
+    --// КОНЕЦ ПАНЕЛИ ТЕМ
+    --// ===================================================================
 end
 return Kavo
