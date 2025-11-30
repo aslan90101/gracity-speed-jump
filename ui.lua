@@ -2494,27 +2494,25 @@ end
 return Kavo
 -- Открытие/закрытие меню по клавише M
 local UserInputService = game:GetService("UserInputService")
-local menuOpened = true  -- по умолчанию меню открыто (как у тебя сейчас)
+local menuOpened = false  -- изначально меню открыто (как у тебя сейчас)
 
--- Скрываем меню при запуске, если хочешь, чтобы оно было закрыто изначально:
--- game.CoreGui[LibName].Enabled = false
--- menuOpened = false
+-- Скрываем меню при запуске (если хочешь, чтобы по умолчанию было закрыто — оставь true и поменяй ниже)
+game.CoreGui[LibName].Enabled = true
 
 UserInputService.InputBegan:Connect(function(key, gameProcessed)
     if gameProcessed then return end
     if key.KeyCode == Enum.KeyCode.M then
         menuOpened = not menuOpened
-        game.CoreGui[LibName]:TweenSize(
-            menuOpened and UDim2.new(0, 525, 0, 318) or UDim2.new(0, 525, 0, 0),
-            Enum.EasingDirection.Out,
-            Enum.EasingStyle.Quart,
-            0.3,
-            true
-        )
-        wait(0.3) -- чтобы не спамилось
-        if not menuOpened then
-            game.CoreGui[LibName].Main.Position = UDim2.new(0.336503863, 0, 0.275485456, 0) -- возвращаем позицию
-        end
         game.CoreGui[LibName].Enabled = menuOpened
+        
+        -- Опционально: лёгкая анимация появления/исчезновения
+        if menuOpened then
+            game.CoreGui[LibName].Main.Visible = true
+            game.TweenService:Create(game.CoreGui[LibName].Main, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 525, 0, 318)}):Play()
+        else
+            game.TweenService:Create(game.CoreGui[LibName].Main, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+            wait(0.2)
+            game.CoreGui[LibName].Main.Visible = false
+        end
     end
 end)
