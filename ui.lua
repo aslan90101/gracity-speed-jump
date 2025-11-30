@@ -2492,34 +2492,29 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
+-- Открытие/закрытие меню по клавише M
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local gui = game.CoreGui[LibName]
-local main = gui.Main
+local menuOpened = true  -- по умолчанию меню открыто (как у тебя сейчас)
 
-local menuVisible = true
+-- Скрываем меню при запуске, если хочешь, чтобы оно было закрыто изначально:
+-- game.CoreGui[LibName].Enabled = false
+-- menuOpened = false
 
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
+UserInputService.InputBegan:Connect(function(key, gameProcessed)
     if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.M then
-        menuVisible = not menuVisible
-        
-        if menuVisible then
-            -- Открываем
-            gui.Enabled = true
-            main.Position = UDim2.new(0.336503863, 0, 0.275485456, 0)
-            main.Size = UDim2.new(0, 0, 0, 0)
-            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                Size = UDim2.new(0, 525, 0, 318)
-            }):Play()
-        else
-            -- Закрываем с красивой анимацией в центр
-            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                Size = UDim2.new(0, 0, 0, 0),
-                Position = UDim2.new(0, main.AbsolutePosition.X + main.AbsoluteSize.X/2, 0, main.AbsolutePosition.Y + main.AbsoluteSize.Y/2)
-            }):Play()
-            task.wait(0.31)
-            gui.Enabled = false
+    if key.KeyCode == Enum.KeyCode.M then
+        menuOpened = not menuOpened
+        game.CoreGui[LibName]:TweenSize(
+            menuOpened and UDim2.new(0, 525, 0, 318) or UDim2.new(0, 525, 0, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quart,
+            0.3,
+            true
+        )
+        wait(0.3) -- чтобы не спамилось
+        if not menuOpened then
+            game.CoreGui[LibName].Main.Position = UDim2.new(0.336503863, 0, 0.275485456, 0) -- возвращаем позицию
         end
+        game.CoreGui[LibName].Enabled = menuOpened
     end
 end)
