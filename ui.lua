@@ -2475,127 +2475,127 @@ function Kavo.CreateLib(kavName, themeList)
         return Sections
     end  
     return Tabs
-	--// ==================== ПЛАВАЮЩЕЕ МЕНЮ ТЕМ (в стиле скрина) ====================
-	local ThemeMenu = Instance.new("Frame")
-	local ThemeCorner = Instance.new("UICorner")
-	local ThemeTitle = Instance.new("TextLabel")
-	local ThemeList = Instance.new("Frame")
-	local ThemeListLayout = Instance.new("UIListLayout")
-	
-	-- Основной фрейм (в правой части экрана)
-	ThemeMenu.Name = "ThemeMenu"
-	ThemeMenu.Parent = ScreenGui
-	ThemeMenu.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	ThemeMenu.Position = UDim2.new(1, -180, 0.1, 0) -- справа от основного меню
-	ThemeMenu.Size = UDim2.new(0, 160, 0, 320)
-	ThemeMenu.ZIndex = 10
-	ThemeMenu.Active = true
-	ThemeMenu.Draggable = true -- можно двигать отдельно
-	
-	ThemeCorner.CornerRadius = UDim.new(0, 8)
-	ThemeCorner.Parent = ThemeMenu
-	
-	-- Заголовок
-	ThemeTitle.Name = "Title"
-	ThemeTitle.Parent = ThemeMenu
-	ThemeTitle.BackgroundTransparency = 1
-	ThemeTitle.Size = UDim2.new(1, 0, 0, 40)
-	ThemeTitle.Font = Enum.Font.GothamBold
-	ThemeTitle.Text = "THEMES"
-	ThemeTitle.TextColor3 = Color3.fromRGB(255, 70, 70)
-	ThemeTitle.TextSize = 16
-	ThemeTitle.ZIndex = 11
-	
-	-- Список тем
-	ThemeList.Parent = ThemeMenu
-	ThemeList.BackgroundTransparency = 1
-	ThemeList.Position = UDim2.new(0, 10, 0, 50)
-	ThemeList.Size = UDim2.new(1, -20, 1, -60)
-	ThemeList.ZIndex = 11
-	
-	ThemeListLayout.Parent = ThemeList
-	ThemeListLayout.Padding = UDim.new(0, 6)
-	ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	
-	-- Темы (добавил 6 красивых)
-	local ThemePresets = {
-	    ["Standart"] = { SchemeColor = Color3.fromRGB(74,99,135),   Background = Color3.fromRGB(36,37,43),   Header = Color3.fromRGB(28,29,34),   TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(32,32,38) },
-	    ["Light"]    = { SchemeColor = Color3.fromRGB(100,149,237), Background = Color3.fromRGB(248,248,248), Header = Color3.fromRGB(230,230,230), TextColor = Color3.fromRGB(40,40,40),   ElementColor = Color3.fromRGB(255,255,255) },
-	    ["Dark"]     = { SchemeColor = Color3.fromRGB(138,43,226),  Background = Color3.fromRGB(18,18,18),   Header = Color3.fromRGB(10,10,10),   TextColor = Color3.fromRGB(230,230,230), ElementColor = Color3.fromRGB(28,28,28) },
-	    ["Blood"]    = { SchemeColor = Color3.fromRGB(220,20,60),   Background = Color3.fromRGB(15,8,10),    Header = Color3.fromRGB(8,4,6),      TextColor = Color3.fromRGB(255,100,100), ElementColor = Color3.fromRGB(35,10,15) },
-	    ["Neon"]     = { SchemeColor = Color3.fromRGB(0,255,255),   Background = Color3.fromRGB(5,15,25),    Header = Color3.fromRGB(0,10,20),    TextColor = Color3.fromRGB(0,255,255),   ElementColor = Color3.fromRGB(10,40,60) },
-	    ["Forest"]   = { SchemeColor = Color3.fromRGB(50,205,50),   Background = Color3.fromRGB(10,30,10),   Header = Color3.fromRGB(5,20,5),     TextColor = Color3.fromRGB(180,255,180), ElementColor = Color3.fromRGB(15,60,15) },
-	}
-	
-	-- Создаём кнопки
-	for themeName, colors in pairs(ThemePresets) do
-	    local btn = Instance.new("TextButton")
-	    btn.Name = themeName
-	    btn.Parent = ThemeList
-	    btn.BackgroundColor3 = colors.ElementColor
-	    btn.Size = UDim2.new(1, 0, 0, 36)
-	    btn.Font = Enum.Font.GothamBold
-	    btn.Text = themeName
-	    btn.TextColor3 = colors.TextColor
-	    btn.TextSize = 14
-	    btn.ZIndex = 12
-	
-	    local corner = Instance.new("UICorner")
-	    corner.CornerRadius = UDim.new(0, 6)
-	    corner.Parent = btn
-	
-	    local stroke = Instance.new("UIStroke")
-	    stroke.Color = colors.SchemeColor
-	    stroke.Thickness = 1.5
-	    stroke.Parent = btn
-	
-	    -- Ховер эффект
-	    btn.MouseEnter:Connect(function()
-	        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = Color3.fromRGB(colors.ElementColor.r*255+20, colors.ElementColor.g*255+20, colors.ElementColor.b*255+20)}):Play()
-	    end)
-	    btn.MouseLeave:Connect(function()
-	        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = colors.ElementColor}):Play()
-	    end)
-	
-	    -- Смена темы
-	    btn.MouseButton1Click:Connect(function()
-	        for prop, col in pairs(colors) do
-	            Kavo:ChangeColor(prop, col)
-	        end
-	        -- Подсвечиваем активную тему
-	        for _, b in pairs(ThemeList:GetChildren()) do
-	            if b:IsA("TextButton") then
-	                b.UIStroke.Transparency = 1
-	            end
-	        end
-	        stroke.Transparency = 0
-	    end)
-	
-	    -- При запуске подсвечиваем Standart
-	    if themeName == "Standart" then
-	        stroke.Transparency = 0
-	    else
-	        stroke.Transparency = 1
-	    end
-	end
-	
-	-- Авто-обновление цветов при смене темы извне
-	spawn(function()
-	    while wait(0.3) do
-	        ThemeMenu.BackgroundColor3 = themeList.Background
-	        ThemeTitle.TextColor3 = themeList.SchemeColor
-	        for _, btn in pairs(ThemeList:GetChildren()) do
-	            if btn:IsA("TextButton") then
-	                local name = btn.Name
-	                if ThemePresets[name] then
-	                    btn.BackgroundColor3 = ThemePresets[name].ElementColor
-	                    btn.TextColor3 = ThemePresets[name].TextColor
-	                    btn.UIStroke.Color = ThemePresets[name].SchemeColor
-	                end
-	            end
-	        end
-	    end
-	end)
-	--// ==================== КОНЕЦ ПЛАВАЮЩЕГО МЕНЮ ТЕМ ====================
+--// ==================== ПЛАВАЮЩЕЕ МЕНЮ ТЕМ (в стиле скрина) ====================
+local ThemeMenu = Instance.new("Frame")
+local ThemeCorner = Instance.new("UICorner")
+local ThemeTitle = Instance.new("TextLabel")
+local ThemeList = Instance.new("Frame")
+local ThemeListLayout = Instance.new("UIListLayout")
+
+-- Основной фрейм (в правой части экрана)
+ThemeMenu.Name = "ThemeMenu"
+ThemeMenu.Parent = ScreenGui
+ThemeMenu.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ThemeMenu.Position = UDim2.new(1, -180, 0.1, 0) -- справа от основного меню
+ThemeMenu.Size = UDim2.new(0, 160, 0, 320)
+ThemeMenu.ZIndex = 10
+ThemeMenu.Active = true
+ThemeMenu.Draggable = true -- можно двигать отдельно
+
+ThemeCorner.CornerRadius = UDim.new(0, 8)
+ThemeCorner.Parent = ThemeMenu
+
+-- Заголовок
+ThemeTitle.Name = "Title"
+ThemeTitle.Parent = ThemeMenu
+ThemeTitle.BackgroundTransparency = 1
+ThemeTitle.Size = UDim2.new(1, 0, 0, 40)
+ThemeTitle.Font = Enum.Font.GothamBold
+ThemeTitle.Text = "THEMES"
+ThemeTitle.TextColor3 = Color3.fromRGB(255, 70, 70)
+ThemeTitle.TextSize = 16
+ThemeTitle.ZIndex = 11
+
+-- Список тем
+ThemeList.Parent = ThemeMenu
+ThemeList.BackgroundTransparency = 1
+ThemeList.Position = UDim2.new(0, 10, 0, 50)
+ThemeList.Size = UDim2.new(1, -20, 1, -60)
+ThemeList.ZIndex = 11
+
+ThemeListLayout.Parent = ThemeList
+ThemeListLayout.Padding = UDim.new(0, 6)
+ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- Темы (добавил 6 красивых)
+local ThemePresets = {
+    ["Standart"] = { SchemeColor = Color3.fromRGB(74,99,135),   Background = Color3.fromRGB(36,37,43),   Header = Color3.fromRGB(28,29,34),   TextColor = Color3.fromRGB(255,255,255), ElementColor = Color3.fromRGB(32,32,38) },
+    ["Light"]    = { SchemeColor = Color3.fromRGB(100,149,237), Background = Color3.fromRGB(248,248,248), Header = Color3.fromRGB(230,230,230), TextColor = Color3.fromRGB(40,40,40),   ElementColor = Color3.fromRGB(255,255,255) },
+    ["Dark"]     = { SchemeColor = Color3.fromRGB(138,43,226),  Background = Color3.fromRGB(18,18,18),   Header = Color3.fromRGB(10,10,10),   TextColor = Color3.fromRGB(230,230,230), ElementColor = Color3.fromRGB(28,28,28) },
+    ["Blood"]    = { SchemeColor = Color3.fromRGB(220,20,60),   Background = Color3.fromRGB(15,8,10),    Header = Color3.fromRGB(8,4,6),      TextColor = Color3.fromRGB(255,100,100), ElementColor = Color3.fromRGB(35,10,15) },
+    ["Neon"]     = { SchemeColor = Color3.fromRGB(0,255,255),   Background = Color3.fromRGB(5,15,25),    Header = Color3.fromRGB(0,10,20),    TextColor = Color3.fromRGB(0,255,255),   ElementColor = Color3.fromRGB(10,40,60) },
+    ["Forest"]   = { SchemeColor = Color3.fromRGB(50,205,50),   Background = Color3.fromRGB(10,30,10),   Header = Color3.fromRGB(5,20,5),     TextColor = Color3.fromRGB(180,255,180), ElementColor = Color3.fromRGB(15,60,15) },
+}
+
+-- Создаём кнопки
+for themeName, colors in pairs(ThemePresets) do
+    local btn = Instance.new("TextButton")
+    btn.Name = themeName
+    btn.Parent = ThemeList
+    btn.BackgroundColor3 = colors.ElementColor
+    btn.Size = UDim2.new(1, 0, 0, 36)
+    btn.Font = Enum.Font.GothamBold
+    btn.Text = themeName
+    btn.TextColor3 = colors.TextColor
+    btn.TextSize = 14
+    btn.ZIndex = 12
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = colors.SchemeColor
+    stroke.Thickness = 1.5
+    stroke.Parent = btn
+
+    -- Ховер эффект
+    btn.MouseEnter:Connect(function()
+        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = Color3.fromRGB(colors.ElementColor.r*255+20, colors.ElementColor.g*255+20, colors.ElementColor.b*255+20)}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        tween:Create(btn, tweeninfo(0.2), {BackgroundColor3 = colors.ElementColor}):Play()
+    end)
+
+    -- Смена темы
+    btn.MouseButton1Click:Connect(function()
+        for prop, col in pairs(colors) do
+            Kavo:ChangeColor(prop, col)
+        end
+        -- Подсвечиваем активную тему
+        for _, b in pairs(ThemeList:GetChildren()) do
+            if b:IsA("TextButton") then
+                b.UIStroke.Transparency = 1
+            end
+        end
+        stroke.Transparency = 0
+    end)
+
+    -- При запуске подсвечиваем Standart
+    if themeName == "Standart" then
+        stroke.Transparency = 0
+    else
+        stroke.Transparency = 1
+    end
+end
+
+-- Авто-обновление цветов при смене темы извне
+spawn(function()
+    while wait(0.3) do
+        ThemeMenu.BackgroundColor3 = themeList.Background
+        ThemeTitle.TextColor3 = themeList.SchemeColor
+        for _, btn in pairs(ThemeList:GetChildren()) do
+            if btn:IsA("TextButton") then
+                local name = btn.Name
+                if ThemePresets[name] then
+                    btn.BackgroundColor3 = ThemePresets[name].ElementColor
+                    btn.TextColor3 = ThemePresets[name].TextColor
+                    btn.UIStroke.Color = ThemePresets[name].SchemeColor
+                end
+            end
+        end
+    end
+end)
+--// ==================== КОНЕЦ ПЛАВАЮЩЕГО МЕНЮ ТЕМ ====================
 end
 return Kavo
