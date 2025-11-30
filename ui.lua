@@ -226,7 +226,13 @@ function Kavo.CreateLib(kavName, themeList)
     blurFrame.ZIndex = 999
 
     ScreenGui.Parent = game.CoreGui
-    ScreenGui.Name = LibName
+	ScreenGui.Name = LibName
+	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+	    if gameProcessed then return end
+	    if input.KeyCode == Enum.KeyCode.M or input.KeyCode == Enum.KeyCode.Semicolon then
+	        ScreenGui.Enabled = not ScreenGui.Enabled
+	    end
+	end)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
 
@@ -2492,11 +2498,3 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
-local UserInputService = game:GetService("UserInputService")
-
-UserInputService.InputBegan:Connect(function(key, gameProcessed)
-    if gameProcessed then return end
-    if key.KeyCode == Enum.KeyCode.M or key.KeyCode == Enum.KeyCode.Semicolon then
-        game.CoreGui[LibName].Enabled = not game.CoreGui[LibName].Enabled
-    end
-end)
