@@ -215,152 +215,6 @@ function Kavo.CreateLib(kavName, themeList)
     local blurFrame = Instance.new("Frame")
 
     Kavo:DraggingEnabled(MainHeader, Main)
-	--// ===== КНОПКА СМЕНЫ ТЕМЫ (ПАЛИТРА) =====
-	local ThemeButton = Instance.new("ImageButton")
-	local ThemeCorner = Instance.new("UICorner")
-	local ThemePanel = Instance.new("Frame")
-	local ThemePanelCorner = Instance.new("UICorner")
-	local ThemeList = Instance.new("UIListLayout")
-	local ThemePadding = Instance.new("UIPadding")
-	
-	-- Кнопка палитры
-	ThemeButton.Name = "ThemeButton"
-	ThemeButton.Parent = MainHeader
-	ThemeButton.BackgroundTransparency = 1
-	ThemeButton.Position = UDim2.new(0.88, 0, 0.1, 0)
-	ThemeButton.Size = UDim2.new(0, 28, 0, 28)
-	ThemeButton.Image = "rbxassetid://7072716849" -- иконка палитры
-	ThemeButton.ImageColor3 = themeList.TextColor
-	ThemeButton.ZIndex = 10
-	
-	ThemeCorner.CornerRadius = UDim.new(0, 6)
-	ThemeCorner.Parent = ThemeButton
-	
-	-- Панель с темами
-	ThemePanel.Name = "ThemePanel"
-	ThemePanel.Parent = Main
-	ThemePanel.BackgroundColor3 = themeList.Header
-	ThemePanel.Position = UDim2.new(1, -140, 0, 35)
-	ThemePanel.Size = UDim2.new(0, 130, 0, 0) -- стартовая высота 0
-	ThemePanel.ClipsDescendants = true
-	ThemePanel.Visible = true
-	ThemePanel.ZIndex = 100
-	
-	ThemePanelCorner.CornerRadius = UDim.new(0, 8)
-	ThemePanelCorner.Parent = ThemePanel
-	
-	ThemeList.Parent = ThemePanel
-	ThemeList.Padding = UDim.new(0, 4)
-	ThemeList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	
-	ThemePadding.Parent = ThemePanel
-	ThemePadding.PaddingTop = UDim.new(0, 8)
-	ThemePadding.PaddingBottom = UDim.new(0, 8)
-	ThemePadding.PaddingLeft = UDim.new(0, 8)
-	ThemePadding.PaddingRight = UDim.new(0, 8)
-	
-	-- Функция создания кнопки темы
-	local function CreateThemeOption(name, themetable)
-	    local btn = Instance.new("TextButton")
-	    btn.Size = UDim2.new(1, -8, 0, 34)
-	    btn.BackgroundColor3 = themeList.ElementColor
-	    btn.Text = name
-	    btn.TextColor3 = themeList.TextColor
-	    btn.Font = Enum.Font.GothamBold
-	    btn.TextSize = 13
-	    btn.AutoButtonColor = false
-	    btn.Parent = ThemePanel
-	
-	    local corner = Instance.new("UICorner")
-	    corner.CornerRadius = UDim.new(0, 6)
-	    corner.Parent = btn
-	
-	    btn.MouseButton1Click:Connect(function()
-	        for propency, obj in pairs(themeList) do
-	            themeList[ency] = themetable[ency] or themeList[ency]
-	        end
-	        
-	        -- Обновляем цвета кнопки палитры
-	        ThemeButton.ImageColor3 = themeList.TextColor
-	        
-	        -- Перезапускаем обновление всех цветов
-	        coroutine.wrap(function()
-	            while wait(0.1) do
-	                for obj, prop in pairs(Objects) do
-	                    if obj and obj.Parent then
-	                        if prop == "BackgroundColor3" then
-	                            obj.BackgroundColor3 = themeList.Background
-	                        elseif prop == "SchemeColor" then
-	                            obj.BackgroundColor3 = themeList.SchemeColor
-	                            obj.ImageColor3 = themeList.SchemeColor
-	                        elseif prop == "TextColor3" then
-	                            obj.TextColor3 = themeList.TextColor
-	                        elseif prop == "Header" then
-	                            obj.BackgroundColor3 = themeList.Header
-	                        end
-	                    end
-	                end
-	            end
-	        end)()
-	        
-	        -- Закрываем панель
-	        ThemePanel:TweenSize(UDim2.new(0, 130, 0, 0), "Out", "Quart", 0.3, true)
-	        wait(0.3)
-	    end)
-	
-	    btn.MouseEnter:Connect(function()
-	        btn:TweenBackgroundColor3(themeList.SchemeColor, 0.2)
-	    end)
-	    btn.MouseLeave:Connect(function()
-	        btn:TweenBackgroundColor3(themeList.ElementColor, 0.2)
-	    end)
-	end
-	
-	-- Темы
-	CreateThemeOption("Standart", {
-	    SchemeColor = Color3.fromRGB(74, 99, 135),
-	    Background = Color3.fromRGB(36, 37, 43),
-	    Header = Color3.fromRGB(28, 29, 34),
-	    TextColor = Color3.fromRGB(255,255,255),
-	    ElementColor = Color3.fromRGB(32, 32, 38)
-	})
-	
-	CreateThemeOption("Light", {
-	    SchemeColor = Color3.fromRGB(80, 140, 255),
-	    Background = Color3.fromRGB(245, 245, 250),
-	    Header = Color3.fromRGB(255, 255, 255),
-	    TextColor = Color3.fromRGB(30, 30, 40),
-	    ElementColor = Color3.fromRGB(230, 235, 245)
-	})
-	
-	CreateThemeOption("Dark", {
-	    SchemeColor = Color3.fromRGB(120, 80, 255),
-	    Background = Color3.fromRGB(15, 15, 20),
-	    Header = Color3.fromRGB(10, 10, 15),
-	    TextColor = Color3.fromRGB(230, 230, 255),
-	    ElementColor = Color3.fromRGB(25, 25, 35)
-	})
-	
-	-- Открытие/закрытие панели
-	local panelOpen = false
-	ThemeButton.MouseButton1Click:Connect(function()
-	    panelOpen = not panelOpen
-	    if panelOpen then
-	        ThemePanel:TweenSize(UDim2.new(0, 130, 0, ThemeList.AbsoluteContentSize.Y + 16), "Out", "Quart", 0.4, true)
-	    else
-	        ThemePanel:TweenSize(UDim2.new(0, 130, 0, 0), "Out", "Quart", 0.3, true)
-	    end
-	end)
-	
-	-- Авто-обновление цвета иконки при смене темы
-	coroutine.wrap(function()
-	    while wait(0.1) do
-	        if ThemeButton and ThemeButton.Parent then
-	            ThemeButton.ImageColor3 = themeList.TextColor
-	        end
-	        ThemePanel.BackgroundColor3 = themeList.Header
-	    end
-	end)()
 
     blurFrame.Name = "blurFrame"
     blurFrame.Parent = pages
@@ -373,13 +227,13 @@ function Kavo.CreateLib(kavName, themeList)
 
     ScreenGui.Parent = game.CoreGui
     ScreenGui.Name = LibName
-	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-	    if gameProcessed then return end
-	    if input.KeyCode == Enum.KeyCode.M or input.KeyCode == Enum.KeyCode.Semicolon then
-	        ScreenGui.Enabled = not ScreenGui.Enabled
-	    end
-	end)
-	
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.KeyCode == Enum.KeyCode.M or input.KeyCode == Enum.KeyCode.Semicolon then
+            ScreenGui.Enabled = not ScreenGui.Enabled
+        end
+    end)
+    
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
 
@@ -2621,5 +2475,138 @@ function Kavo.CreateLib(kavName, themeList)
         return Sections
     end  
     return Tabs
+	--// === КРАСИВЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ (Standart / Light / Dark) ===
+	local ThemeSelector = Instance.new("Frame")
+	local ThemeCorner = Instance.new("UICorner")
+	local ThemeButton = Instance.new("TextButton")
+	local ThemeList = Instance.new("Frame")
+	local ThemeListLayout = Instance.new("UIListLayout")
+	local ThemeOpen = false
+	
+	ThemeSelector.Name = "ThemeSelector"
+	ThemeSelector.Parent = MainHeader
+	ThemeSelector.BackgroundColor3 = themeList.SchemeColor
+	ThemeSelector.Position = UDim2.new(0.75, 0, 0.1, 0)
+	ThemeSelector.Size = UDim2.new(0, 140, 0, 26)
+	ThemeSelector.ZIndex = 10
+	
+	ThemeCorner.CornerRadius = UDim.new(0, 6)
+	ThemeCorner.Parent = ThemeSelector
+	
+	ThemeButton.Name = "ThemeButton"
+	ThemeButton.Parent = ThemeSelector
+	ThemeButton.BackgroundTransparency = 1
+	ThemeButton.Size = UDim2.new(1, 0, 1, 0)
+	ThemeButton.Font = Enum.Font.GothamBold
+	ThemeButton.Text = "Standart"
+	ThemeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ThemeButton.TextSize = 13
+	ThemeButton.ZIndex = 11
+	
+	ThemeList.Name = "ThemeList"
+	ThemeList.Parent = ThemeSelector
+	ThemeList.BackgroundColor3 = themeList.Background
+	ThemeList.BorderSizePixel = 0
+	ThemeList.Position = UDim2.new(0, 0, 1, 4)
+	ThemeList.Size = UDim2.new(1, 0, 0, 0)
+	ThemeList.Visible = false
+	ThemeList.ZIndex = 12
+	ThemeList.ClipsDescendants = true
+	
+	local ListCorner = Instance.new("UICorner")
+	ListCorner.CornerRadius = UDim.new(0, 6)
+	ListCorner.Parent = ThemeList
+	
+	ThemeListLayout.Parent = ThemeList
+	ThemeListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	ThemeListLayout.Padding = UDim.new(0, 2)
+	
+	local themes = {
+	    Standart = { -- текущая тема по умолчанию
+	        SchemeColor = Color3.fromRGB(74, 99, 135),
+	        Background = Color3.fromRGB(36, 37, 43),
+	        Header = Color3.fromRGB(28, 29, 34),
+	        TextColor = Color3.fromRGB(255,255,255),
+	        ElementColor = Color3.fromRGB(32, 32, 38)
+	    },
+	    Light = {
+	        SchemeColor = Color3.fromRGB(100, 149, 237),
+	        Background = Color3.fromRGB(248, 248, 248),
+	        Header = Color3.fromRGB(230, 230, 230),
+	        TextColor = Color3.fromRGB(40, 40, 40),
+	        ElementColor = Color3.fromRGB(255, 255, 255)
+	    },
+	    Dark = {
+	        SchemeColor = Color3.fromRGB(138, 43, 226),
+	        Background = Color3.fromRGB(18, 18, 18),
+	        Header = Color3.fromRGB(10, 10, 10),
+	        TextColor = Color3.fromRGB(230, 230, 230),
+	        ElementColor = Color3.fromRGB(28, 28, 28)
+	    }
+	}
+	
+	-- Создаём кнопки тем
+	for name, data in pairs(themes) do
+	    local btn = Instance.new("TextButton")
+	    btn.Name = name
+	    btn.Parent = ThemeList
+	    btn.BackgroundColor3 = data.ElementColor
+	    btn.Size = UDim2.new(1, 0, 0, 28)
+	    btn.Font = Enum.Font.Gotham
+	    btn.Text = "  " .. name
+	    btn.TextColor3 = data.TextColor
+	    btn.TextXAlignment = Enum.TextXAlignment.Left
+	    btn.TextSize = 13
+	    btn.ZIndex = 13
+	
+	    local corner = Instance.new("UICorner")
+	    corner.CornerRadius = UDim.new(0, 4)
+	    corner.Parent = btn
+	
+	    btn.MouseButton1Click:Connect(function()
+	        -- Применяем тему
+	        for prop, color in pairs(data) do
+	            Kavo:ChangeColor(prop, color)
+	        end
+	        ThemeButton.Text = name
+	        ThemeSelector.BackgroundColor3 = data.SchemeColor
+	        ThemeButton.TextColor3 = if name == "Light" then Color3.fromRGB(30,30,30) else Color3.fromRGB(255,255,255)
+	
+	        -- Анимация закрытия
+	        ThemeList:TweenSize(UDim2.new(1,0,0,0), "Out", "Quad", 0.2, true)
+	        wait(0.2)
+	        ThemeList.Visible = false
+	        ThemeOpen = false
+	    end)
+	
+	    btn.MouseEnter:Connect(function()
+	        tween:Create(btn, tweeninfo(0.15), {BackgroundColor3 = Color3.fromRGB(data.ElementColor.r*255+15, data.ElementColor.g*255+15, data.ElementColor.b*255+15)}):Play()
+	    end)
+	    btn.MouseLeave:Connect(function()
+	        tween:Create(btn, tweeninfo(0.15), {BackgroundColor3 = data.ElementColor}):Play()
+	    end)
+	end
+	
+	-- Открытие/закрытие списка
+	ThemeButton.MouseButton1Click:Connect(function()
+	    ThemeOpen = not ThemeOpen
+	    if ThemeOpen then
+	        ThemeList.Visible = true
+	        ThemeList:TweenSize(UDim2.new(1,0,0,90), "Out", "Quad", 0.25, true)
+	    else
+	        ThemeList:TweenSize(UDim2.new(1,0,0,0), "Out", "Quad", 0.2, true)
+	        wait(0.2)
+	        ThemeList.Visible = false
+	    end
+	end)
+	
+	-- Авто-обновление цвета селектора при смене темы извне
+	coroutine.wrap(function()
+	    while wait(0.5) do
+	        ThemeSelector.BackgroundColor3 = themeList.SchemeColor
+	        ThemeButton.TextColor3 = themeList.TextColor
+	    end
+	end)()
+	--// === КОНЕЦ ПЕРЕКЛЮЧАТЕЛЯ ТЕМ ===
 end
 return Kavo
