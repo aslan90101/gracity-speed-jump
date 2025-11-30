@@ -226,16 +226,15 @@ function Kavo.CreateLib(kavName, themeList)
     blurFrame.ZIndex = 999
 
     ScreenGui.Parent = game.CoreGui
-    ScreenGui.Name = LibName
-    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-        if gameProcessed then return end
-        if input.KeyCode == Enum.KeyCode.M or input.KeyCode == Enum.KeyCode.Semicolon then
-            ScreenGui.Enabled = not ScreenGui.Enabled
-        end
-    end)
-    
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.ResetOnSpawn = false
+        ScreenGui.Name = LibName
+        
+        --// Горячая клавиша M / Ь
+        game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+            if gameProcessed then return end
+            if input.KeyCode == Enum.KeyCode.M or input.KeyCode == Enum.KeyCode.Semicolon then
+                ScreenGui.Enabled = not ScreenGui.Enabled
+            end
+        end)
 
     Main.Name = "Main"
     Main.Parent = ScreenGui
