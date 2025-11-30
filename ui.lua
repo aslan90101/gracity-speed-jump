@@ -2492,3 +2492,34 @@ function Kavo.CreateLib(kavName, themeList)
     return Tabs
 end
 return Kavo
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local gui = game.CoreGui[LibName]
+local main = gui.Main
+
+local menuVisible = true
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.M then
+        menuVisible = not menuVisible
+        
+        if menuVisible then
+            -- Открываем
+            gui.Enabled = true
+            main.Position = UDim2.new(0.336503863, 0, 0.275485456, 0)
+            main.Size = UDim2.new(0, 0, 0, 0)
+            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                Size = UDim2.new(0, 525, 0, 318)
+            }):Play()
+        else
+            -- Закрываем с красивой анимацией в центр
+            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                Size = UDim2.new(0, 0, 0, 0),
+                Position = UDim2.new(0, main.AbsolutePosition.X + main.AbsoluteSize.X/2, 0, main.AbsolutePosition.Y + main.AbsoluteSize.Y/2)
+            }):Play()
+            task.wait(0.31)
+            gui.Enabled = false
+        end
+    end
+end)
