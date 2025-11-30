@@ -4,7 +4,7 @@
 local Blacklist = {
     "CAPRICORNTOP228",
     "ZuuIknown",
-    "noname322",
+    "5fkX0ofvIGfU",
     -- добавляй ники сюда
 }
 
