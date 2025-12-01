@@ -58,6 +58,7 @@ local themes = {
     TextColor = Color3.fromRGB(255,255,255),
     ElementColor = Color3.fromRGB(32, 32, 38)
 }
+
 local themeStyles = {
     DarkTheme = {
         SchemeColor = Color3.fromRGB(64, 64, 64),
@@ -73,8 +74,9 @@ local themeStyles = {
         TextColor = Color3.fromRGB(0,0,0),
         ElementColor = Color3.fromRGB(224, 224, 224)
     },
+    -- Было ярко-красное → теперь тёмно-серое с лёгким свечением
     BloodTheme = {
-        SchemeColor = Color3.fromRGB(227, 27, 27),
+        SchemeColor = Color3.fromRGB(50, 55, 60),      -- ← новый «чёрный, но выделяется»
         Background = Color3.fromRGB(10, 10, 10),
         Header = Color3.fromRGB(5, 5, 5),
         TextColor = Color3.fromRGB(255,255,255),
@@ -101,8 +103,9 @@ local themeStyles = {
         TextColor = Color3.fromRGB(255, 255, 255),
         ElementColor = Color3.fromRGB(52, 74, 95)
     },
+    -- Было красное → теперь тот же тёмно-серый с свечением
     Sentinel = {
-        SchemeColor = Color3.fromRGB(230, 35, 69),
+        SchemeColor = Color3.fromRGB(50, 55, 60),
         Background = Color3.fromRGB(32, 32, 32),
         Header = Color3.fromRGB(24, 24, 24),
         TextColor = Color3.fromRGB(119, 209, 138),
