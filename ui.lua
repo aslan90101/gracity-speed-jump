@@ -52,78 +52,83 @@ end
 
 
 local themes = {
-    SchemeColor = Color3.fromRGB(74, 99, 135),
-    Background = Color3.fromRGB(36, 37, 43),
-    Header = Color3.fromRGB(28, 29, 34),
-    TextColor = Color3.fromRGB(255,255,255),
-    ElementColor = Color3.fromRGB(32, 32, 38)
-}
+    -- Основной «дефолтный» тёмный стиль (замена старому синему)
+    Default = {
+        SchemeColor   = Color3.fromRGB(88, 101, 133),   -- мягкий холодный синий-серый акцент
+        Background    = Color3.fromRGB(18, 20, 26),
+        Header        = Color3.fromRGB(12, 14, 20),
+        TextColor     = Color3.fromRGB(220, 220, 220),
+        ElementColor  = Color3.fromRGB(30, 33, 42)
+    },
 
-local themeStyles = {
     DarkTheme = {
-        SchemeColor = Color3.fromRGB(64, 64, 64),
-        Background = Color3.fromRGB(0, 0, 0),
-        Header = Color3.fromRGB(0, 0, 0),
-        TextColor = Color3.fromRGB(255,255,255),
-        ElementColor = Color3.fromRGB(20, 20, 20)
+        SchemeColor   = Color3.fromRGB(90, 90, 90),
+        Background    = Color3.fromRGB(10, 10, 10),
+        Header        = Color3.fromRGB(5, 5, 5),
+        TextColor     = Color3.fromRGB(225, 225, 225),
+        ElementColor  = Color3.fromRGB(28, 28, 33)
     },
-    LightTheme = {
-        SchemeColor = Color3.fromRGB(150, 150, 150),
-        Background = Color3.fromRGB(255,255,255),
-        Header = Color3.fromRGB(200, 200, 200),
-        TextColor = Color3.fromRGB(0,0,0),
-        ElementColor = Color3.fromRGB(224, 224, 224)
+
+    LightTheme = { -- оставил только для совместимости, но если не нужен — удали
+        SchemeColor   = Color3.fromRGB(120, 120, 120),
+        Background    = Color3.fromRGB(245, 245, 245),
+        Header        = Color3.fromRGB(220, 220, 220),
+        TextColor     = Color3.fromRGB(30, 30, 30),
+        ElementColor  = Color3.fromRGB(210, 210, 210)
     },
-    -- Было ярко-красное → теперь тёмно-серое с лёгким свечением
-    BloodTheme = {
-        SchemeColor = Color3.fromRGB(50, 55, 60),      -- ← новый «чёрный, но выделяется»
-        Background = Color3.fromRGB(10, 10, 10),
-        Header = Color3.fromRGB(5, 5, 5),
-        TextColor = Color3.fromRGB(255,255,255),
-        ElementColor = Color3.fromRGB(20, 20, 20)
+
+    -- Чистый минимализм (почти чёрный, но с лёгким контрастом)
+    Void = {
+        SchemeColor   = Color3.fromRGB(70, 78, 92),
+        Background    = Color3.fromRGB(8, 8, 8),
+        Header        = Color3.fromRGB(4, 4, 4),
+        TextColor     = Color3.fromRGB(200, 200, 200),
+        ElementColor  = Color3.fromRGB(22, 22, 27)
     },
-    GrapeTheme = {
-        SchemeColor = Color3.fromRGB(166, 71, 214),
-        Background = Color3.fromRGB(64, 50, 71),
-        Header = Color3.fromRGB(36, 28, 41),
-        TextColor = Color3.fromRGB(255,255,255),
-        ElementColor = Color3.fromRGB(74, 58, 84)
+
+    -- Тёмно-серый с лёгким холодным оттенком (бывший Blood/Sentinel)
+    Ash = {
+        SchemeColor   = Color3.fromRGB(67, 115, 139),   -- приглушённый бирюзово-серый акцент
+        Background    = Color3.fromRGB(15, 15, 15),
+        Header        = Color3.fromRGB(10, 10, 10),
+        TextColor     = Color3.fromRGB(210, 210, 210),
+        ElementColor  = Color3.fromRGB(26, 26, 31)
     },
-    Ocean = {
-        SchemeColor = Color3.fromRGB(86, 76, 251),
-        Background = Color3.fromRGB(26, 32, 58),
-        Header = Color3.fromRGB(38, 45, 71),
-        TextColor = Color3.fromRGB(200, 200, 200),
-        ElementColor = Color3.fromRGB(38, 45, 71)
+
+    -- Тёмно-фиолетовый, но не ядовитый
+    GrapeDark = {
+        SchemeColor   = Color3.fromRGB(112, 79, 140),
+        Background    = Color3.fromRGB(20, 16, 28),
+        Header        = Color3.fromRGB(15, 12, 22),
+        TextColor     = Color3.fromRGB(220, 220, 220),
+        ElementColor  = Color3.fromRGB(35, 28, 46)
     },
-    Midnight = {
-        SchemeColor = Color3.fromRGB(26, 189, 158),
-        Background = Color3.fromRGB(44, 62, 82),
-        Header = Color3.fromRGB(57, 81, 105),
-        TextColor = Color3.fromRGB(255, 255, 255),
-        ElementColor = Color3.fromRGB(52, 74, 95)
+
+    -- Глубокий синий океан (без яркости)
+    OceanDeep = {
+        SchemeColor   = Color3.fromRGB(68, 98, 156),
+        Background    = Color3.fromRGB(14, 20, 36),
+        Header        = Color3.fromRGB(10, 16, 30),
+        TextColor     = Color3.fromRGB(200, 210, 220),
+        ElementColor  = Color3.fromRGB(22, 30, 48)
     },
-    -- Было красное → теперь тот же тёмно-серый с свечением
-    Sentinel = {
-        SchemeColor = Color3.fromRGB(50, 55, 60),
-        Background = Color3.fromRGB(32, 32, 32),
-        Header = Color3.fromRGB(24, 24, 24),
-        TextColor = Color3.fromRGB(119, 209, 138),
-        ElementColor = Color3.fromRGB(24, 24, 24)
+
+    -- Тёмно-зелёный (вместо яркого Midnight и Serpent)
+    MidnightForest = {
+        SchemeColor   = Color3.fromRGB(72, 130, 110),
+        Background    = Color3.fromRGB(16, 26, 22),
+        Header        = Color3.fromRGB(12, 20, 16),
+        TextColor     = Color3.fromRGB(200, 230, 200),
+        ElementColor  = Color3.fromRGB(24, 36, 32)
     },
-    Synapse = {
-        SchemeColor = Color3.fromRGB(46, 48, 43),
-        Background = Color3.fromRGB(13, 15, 12),
-        Header = Color3.fromRGB(36, 38, 35),
-        TextColor = Color3.fromRGB(152, 99, 53),
-        ElementColor = Color3.fromRGB(24, 24, 24)
-    },
-    Serpent = {
-        SchemeColor = Color3.fromRGB(0, 166, 58),
-        Background = Color3.fromRGB(31, 41, 43),
-        Header = Color3.fromRGB(22, 29, 31),
-        TextColor = Color3.fromRGB(255,255,255),
-        ElementColor = Color3.fromRGB(22, 29, 31)
+
+    -- Тёмно-оранжевый/кирпичный (вместо старого Synapse)
+    Ember = {
+        SchemeColor   = Color3.fromRGB(145, 90, 70),
+        Background    = Color3.fromRGB(28, 18, 14),
+        Header        = Color3.fromRGB(22, 14, 10),
+        TextColor     = Color3.fromRGB(230, 200, 180),
+        ElementColor  = Color3.fromRGB(40, 28, 22)
     }
 }
 local oldTheme = ""
