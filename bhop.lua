@@ -19,7 +19,7 @@ local Config = {
     WALK_SPEED = 16,
     CROUCH_SPEED = 10,
     --[[Advanced Speed]]
-    AIR_MAX_SPEED = 19.1,        -- The speed at which AIR_MAX_SPEED_FRIC is applied.
+    AIR_MAX_SPEED = 19.9,        -- The speed at which AIR_MAX_SPEED_FRIC is applied.
     AIR_MAX_SPEED_FRIC = 3,      -- The initial friction applied at max speed
     AIR_MAX_SPEED_FRIC_DEC = .5, -- Amount multiplied to current max speed friction per 1/60sec
     MIN_SLOPE_ANGLE = 40,
