@@ -654,7 +654,4 @@ function Library:Create(name,subname,keybind)
         return pageitems
     end
 
-    return Window
-end
-
 return Library
