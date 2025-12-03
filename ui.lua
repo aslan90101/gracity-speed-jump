@@ -185,37 +185,37 @@ function Library:Create(name,subname,keybind)
         local pageitems = {}
 
         function pageitems:label(text)
-        local Label = Instance.new("Frame")
-        local UICorner = Instance.new("UICorner")
-        local LabelText = Instance.new("TextLabel")
-        Label.Name = text
-        Label.Parent = PageContainer
-        Label.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        Label.BorderSizePixel = 0
-        Label.Size = UDim2.new(0, 435, 0, 32)
-        UICorner.CornerRadius = UDim.new(0, 4)
-        UICorner.Parent = Label
-        LabelText.Name = "LabelText"
-        LabelText.Text = tostring(text)
-        LabelText.Parent = Label
-        LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        LabelText.BackgroundTransparency = 1.000
-        LabelText.Position = UDim2.new(0.0137931034, 0, 0, 0)
-        LabelText.Size = UDim2.new(0, 423, 0, 32)
-        LabelText.Font = Enum.Font.Gotham
-        LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
-        LabelText.TextSize = 14.000
-        LabelText.TextXAlignment = Enum.TextXAlignment.Left
-        
-        -- Добавляем метод UpdateLabel
-        local labelObj = {}
-        
-        function labelObj:UpdateLabel(newText)
-            LabelText.Text = tostring(newText)
+            local Label = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local LabelText = Instance.new("TextLabel")
+            Label.Name = text
+            Label.Parent = PageContainer
+            Label.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+            Label.BorderSizePixel = 0
+            Label.Size = UDim2.new(0, 435, 0, 32)
+            UICorner.CornerRadius = UDim.new(0, 4)
+            UICorner.Parent = Label
+            LabelText.Name = "LabelText"
+            LabelText.Text = tostring(text)
+            LabelText.Parent = Label
+            LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            LabelText.BackgroundTransparency = 1.000
+            LabelText.Position = UDim2.new(0.0137931034, 0, 0, 0)
+            LabelText.Size = UDim2.new(0, 423, 0, 32)
+            LabelText.Font = Enum.Font.Gotham
+            LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+            LabelText.TextSize = 14.000
+            LabelText.TextXAlignment = Enum.TextXAlignment.Left
+            
+            -- Добавляем метод UpdateLabel
+            local labelObj = {}
+            
+            function labelObj:UpdateLabel(newText)
+                LabelText.Text = tostring(newText)
+            end
+            
+            return labelObj
         end
-        
-        return labelObj
-    end
         
         function pageitems:button(text,callback)
             local callback = callback or function() end
