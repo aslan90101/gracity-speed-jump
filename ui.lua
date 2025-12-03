@@ -661,6 +661,9 @@ function Library:Create(name,subname,keybind)
         end
         
         return pageitems
-    end
+    end  -- <-- Добавьте эту строку!
+
+    return Window
+end
 
 return Library
