@@ -36,14 +36,14 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local ids = {   
-    "rbxassetid://5153845714",
+    "rbxassetid://7147454322",
 }
 
 local sounds = {}
 for _, i in ipairs(ids) do
     local sound = Instance.new("Sound")
     sound.SoundId = i
-    sound.Volume = 2
+    sound.Volume = 1
     sound.Parent = game.Workspace  -- Or another appropriate parent
     table.insert(sounds, sound)
 end
