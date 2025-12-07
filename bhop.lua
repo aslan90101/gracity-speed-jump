@@ -36,11 +36,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local ids = {   
-    "rbxassetid://7338942417",
-    "rbxassetid://7338942345",
-    "rbxassetid://7338942259",
-    "rbxassetid://7338942180",
-    "rbxassetid://7338942417",
+    "rbxassetid://5153845714",
 }
 
 local sounds = {}
