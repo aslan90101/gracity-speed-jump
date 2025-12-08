@@ -142,6 +142,17 @@ end)
 
 local LibName = tostring(math.random(1, 100))..tostring(math.random(1,50))..tostring(math.random(1, 100))
 
+-- Функция для переключения UI по клавише M
+local function setupKeyToggle()
+    input.InputBegan:Connect(function(key)
+        if key.KeyCode == Enum.KeyCode.M then -- Английская M
+            Kavo:ToggleUI()
+        elseif key.KeyCode == Enum.KeyCode.Semicolon then -- Русская "Ь" (англ. раскладка - ;)
+            Kavo:ToggleUI()
+        end
+    end)
+end
+
 function Kavo:ToggleUI()
     if game.CoreGui[LibName].Enabled then
         game.CoreGui[LibName].Enabled = false
@@ -202,7 +213,7 @@ function Kavo.CreateLib(kavName, themeList)
     local headerCover = Instance.new("UICorner")
     local coverup = Instance.new("Frame")
     local title = Instance.new("TextLabel")
-    local close = Instance.new("ImageButton")
+    -- Убрали close кнопку
     local MainSide = Instance.new("Frame")
     local sideCorner = Instance.new("UICorner")
     local coverup_2 = Instance.new("Frame")
@@ -272,6 +283,8 @@ function Kavo.CreateLib(kavName, themeList)
     title.TextSize = 16.000
     title.TextXAlignment = Enum.TextXAlignment.Left
 
+    -- Убрали close кнопку полностью
+    --[[
     close.Name = "close"
     close.Parent = MainHeader
     close.BackgroundTransparency = 1.000
@@ -287,12 +300,13 @@ function Kavo.CreateLib(kavName, themeList)
         }):Play()
         wait()
         game.TweenService:Create(Main, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0,0,0,0),
-            Position = UDim2.new(0, Main.AbsolutePosition.X + (Main.AbsoluteSize.X / 2), 0, Main.AbsolutePosition.Y + (Main.AbsoluteSize.Y / 2))
-        }):Play()
+			Size = UDim2.new(0,0,0,0),
+			Position = UDim2.new(0, Main.AbsolutePosition.X + (Main.AbsoluteSize.X / 2), 0, Main.AbsolutePosition.Y + (Main.AbsoluteSize.Y / 2))
+		}):Play()
         wait(1)
         ScreenGui:Destroy()
     end)
+    --]]
 
     MainSide.Name = "MainSide"
     MainSide.Parent = Main
@@ -476,7 +490,7 @@ function Kavo.CreateLib(kavName, themeList)
             secName = secName or "Section"
             local sectionFunctions = {}
             local modules = {}
-        hidden = hidden or false
+	    hidden = hidden or false
             local sectionFrame = Instance.new("Frame")
             local sectionlistoknvm = Instance.new("UIListLayout")
             local sectionHead = Instance.new("Frame")
@@ -484,12 +498,12 @@ function Kavo.CreateLib(kavName, themeList)
             local sectionName = Instance.new("TextLabel")
             local sectionInners = Instance.new("Frame")
             local sectionElListing = Instance.new("UIListLayout")
-            
-        if hidden then
-        sectionHead.Visible = false
-        else
-        sectionHead.Visible = true
-        end
+			
+	    if hidden then
+		sectionHead.Visible = false
+	    else
+		sectionHead.Visible = true
+	    end
 
             sectionFrame.Name = "sectionFrame"
             sectionFrame.Parent = page
@@ -588,7 +602,7 @@ function Kavo.CreateLib(kavName, themeList)
                 local btnInfo = Instance.new("TextLabel")
                 local viewInfo = Instance.new("ImageButton")
                 local touch = Instance.new("ImageLabel")
-                local Sample = Instance.new("ImageLabel")
+                -- Убрали Sample (анимацию клика)
 
                 table.insert(modules, bname)
 
@@ -620,14 +634,7 @@ function Kavo.CreateLib(kavName, themeList)
                 viewInfo.ImageRectOffset = Vector2.new(764, 764)
                 viewInfo.ImageRectSize = Vector2.new(36, 36)
 
-                Sample.Name = "Sample"
-                Sample.Parent = buttonElement
-                Sample.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                Sample.BackgroundTransparency = 1.000
-                Sample.Image = "http://www.roblox.com/asset/?id=4560909609"
-                Sample.ImageColor3 = themeList.SchemeColor
-                Objects[Sample] = "ImageColor3"
-                Sample.ImageTransparency = 0.600
+                -- Убрали Sample элемент для анимации клика
 
                 local moreInfo = Instance.new("TextLabel")
                 local UICorner = Instance.new("UICorner")
@@ -683,35 +690,18 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
                 if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
                     Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                end 
+                end
 
                 updateSectionFrame()
-                                UpdateSize()
+                UpdateSize()
 
                 local ms = game.Players.LocalPlayer:GetMouse()
 
                 local btn = buttonElement
-                local sample = Sample
 
                 btn.MouseButton1Click:Connect(function()
                     if not focusing then
-                        callback()
-                        local c = sample:Clone()
-                        c.Parent = btn
-                        local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                        c.Position = UDim2.new(0, x, 0, y)
-                        local len, size = 0.35, nil
-                        if btn.AbsoluteSize.X >= btn.AbsoluteSize.Y then
-                            size = (btn.AbsoluteSize.X * 1.5)
-                        else
-                            size = (btn.AbsoluteSize.Y * 1.5)
-                        end
-                        c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                        for i = 1, 10 do
-                            c.ImageTransparency = c.ImageTransparency + 0.05
-                            wait(len / 12)
-                        end
-                        c:Destroy()
+                        callback() -- Функция выполняется сразу
                     else
                         for i,v in next, infoContainer:GetChildren() do
                             Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
@@ -763,7 +753,6 @@ function Kavo.CreateLib(kavName, themeList)
                             buttonElement.BackgroundColor3 = themeList.ElementColor
                         end
                         viewInfo.ImageColor3 = themeList.SchemeColor
-                        Sample.ImageColor3 = themeList.SchemeColor
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
                         moreInfo.TextColor3 = themeList.TextColor
                         touch.ImageColor3 = themeList.SchemeColor
@@ -886,7 +875,7 @@ function Kavo.CreateLib(kavName, themeList)
 
 
                 updateSectionFrame()
-                                UpdateSize()
+                UpdateSize()
             
                 local btn = textboxElement
                 local infBtn = viewInfo
@@ -987,6 +976,7 @@ function Kavo.CreateLib(kavName, themeList)
                     local toggleEnabled = Instance.new("ImageLabel")
                     local togName = Instance.new("TextLabel")
                     local viewInfo = Instance.new("ImageButton")
+                    -- Убрали Sample элемент для анимации клика
 
                     toggleElement.Name = "toggleElement"
                     toggleElement.Parent = sectionInners
@@ -1050,6 +1040,8 @@ function Kavo.CreateLib(kavName, themeList)
                     viewInfo.ImageRectOffset = Vector2.new(764, 764)
                     viewInfo.ImageRectSize = Vector2.new(36, 36)
 
+                    -- Убрали Sample элемент для анимации клика
+
                     local moreInfo = Instance.new("TextLabel")
                     local UICorner = Instance.new("UICorner")
     
@@ -1069,6 +1061,8 @@ function Kavo.CreateLib(kavName, themeList)
                     UICorner.CornerRadius = UDim.new(0, 4)
                     UICorner.Parent = moreInfo
 
+                    local ms = game.Players.LocalPlayer:GetMouse()
+
                     if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
                         Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
                     end 
@@ -1085,15 +1079,14 @@ function Kavo.CreateLib(kavName, themeList)
 
                     btn.MouseButton1Click:Connect(function()
                         if not focusing then
-                            -- Сначала меняем состояние и вызываем callback
-                            toggled = not toggled
-                            pcall(callback, toggled)
-                            
-                            -- Затем меняем видимость иконки без анимации
-                            if toggled then
-                                img.ImageTransparency = 0
+                            if toggled == false then
+                                img.ImageTransparency = 0 -- Убрали анимацию
+                                toggled = true
+                                pcall(callback, toggled)
                             else
-                                img.ImageTransparency = 1
+                                img.ImageTransparency = 1 -- Убрали анимацию
+                                toggled = false
+                                pcall(callback, toggled)
                             end
                         else
                             for i,v in next, infoContainer:GetChildren() do
@@ -1103,7 +1096,6 @@ function Kavo.CreateLib(kavName, themeList)
                             Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                         end
                     end)
-                    
                     local hovering = false
                     btn.MouseEnter:Connect(function()
                         if not focusing then
@@ -1113,7 +1105,6 @@ function Kavo.CreateLib(kavName, themeList)
                             hovering = true
                         end 
                     end)
-                    
                     btn.MouseLeave:Connect(function()
                         if not focusing then
                             game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
@@ -1136,7 +1127,6 @@ function Kavo.CreateLib(kavName, themeList)
                             moreInfo.TextColor3 = themeList.TextColor
                         end
                     end)()
-                    
                     viewInfo.MouseButton1Click:Connect(function()
                         if not viewDe then
                             viewDe = true
@@ -1157,9 +1147,8 @@ function Kavo.CreateLib(kavName, themeList)
                             viewDe = false
                         end
                     end)
-                    
                     function TogFunction:UpdateToggle(newText, isTogOn)
-                        isTogOn = isTogOn or toggled
+                        isTogOn = isTogOn or toggle
                         if newText ~= nil then 
                             togName.Text = newText
                         end
@@ -1173,9 +1162,8 @@ function Kavo.CreateLib(kavName, themeList)
                             pcall(callback, toggled)
                         end
                     end
-                    
                     return TogFunction
-                end
+            end
 
             function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, callback)
                 slidInf = slidInf or "Slider"
@@ -1315,7 +1303,7 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
 
 
-                                updateSectionFrame()
+                updateSectionFrame()
                 UpdateSize()
                 local mouse = game:GetService("Players").LocalPlayer:GetMouse();
 
@@ -1431,6 +1419,7 @@ function Kavo.CreateLib(kavName, themeList)
                 local opened = false
                 local DropYSize = 33
 
+
                 local dropFrame = Instance.new("Frame")
                 local dropOpen = Instance.new("TextButton")
                 local listImg = Instance.new("ImageLabel")
@@ -1438,7 +1427,11 @@ function Kavo.CreateLib(kavName, themeList)
                 local viewInfo = Instance.new("ImageButton")
                 local UICorner = Instance.new("UICorner")
                 local UIListLayout = Instance.new("UIListLayout")
+                -- Убрали Sample элемент для анимации клика
 
+                local ms = game.Players.LocalPlayer:GetMouse()
+                -- Убрали Sample элемент
+                
                 dropFrame.Name = "dropFrame"
                 dropFrame.Parent = sectionInners
                 dropFrame.BackgroundColor3 = themeList.Background
@@ -1446,7 +1439,7 @@ function Kavo.CreateLib(kavName, themeList)
                 dropFrame.Position = UDim2.new(0, 0, 1.23571432, 0)
                 dropFrame.Size = UDim2.new(0, 352, 0, 33)
                 dropFrame.ClipsDescendants = true
-                
+                -- Убрали sample переменную
                 local btn = dropOpen
                 dropOpen.Name = "dropOpen"
                 dropOpen.Parent = dropFrame
@@ -1521,6 +1514,8 @@ function Kavo.CreateLib(kavName, themeList)
 
                 UICorner.CornerRadius = UDim.new(0, 4)
                 UICorner.Parent = dropOpen
+
+                -- Убрали Sample элемент для анимации клика
 
                 UIListLayout.Parent = dropFrame
                 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -1613,7 +1608,12 @@ function Kavo.CreateLib(kavName, themeList)
                 for i,v in next, list do
                     local optionSelect = Instance.new("TextButton")
                     local UICorner_2 = Instance.new("UICorner")
+                    -- Убрали Sample1 элемент для анимации клика
 
+                    local ms = game.Players.LocalPlayer:GetMouse()
+                    -- Убрали Sample1 элемент
+
+                    -- Убрали sample1 переменную
                     DropYSize = DropYSize + 33
                     optionSelect.Name = "optionSelect"
                     optionSelect.Parent = dropFrame
@@ -1635,7 +1635,7 @@ function Kavo.CreateLib(kavName, themeList)
                             dropFrame:TweenSize(UDim2.new(0, 352, 0, 33), 'InOut', 'Linear', 0.08)
                             wait(0.1)
                             updateSectionFrame()
-                            UpdateSize()
+                            UpdateSize()         
                         else
                             for i,v in next, infoContainer:GetChildren() do
                                 Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
@@ -1685,7 +1685,11 @@ function Kavo.CreateLib(kavName, themeList)
                     for i,v in next, newList do
                         local optionSelect = Instance.new("TextButton")
                         local UICorner_2 = Instance.new("UICorner")
-
+                        -- Убрали Sample11 элемент для анимации клика
+                        local ms = game.Players.LocalPlayer:GetMouse()
+                        -- Убрали Sample11 элемент
+    
+                        -- Убрали sample11 переменную
                         DropYSize = DropYSize + 33
                         optionSelect.Name = "optionSelect"
                         optionSelect.Parent = dropFrame
@@ -1709,7 +1713,7 @@ function Kavo.CreateLib(kavName, themeList)
                                 dropFrame:TweenSize(UDim2.new(0, 352, 0, 33), 'InOut', 'Linear', 0.08)
                                 wait(0.1)
                                 updateSectionFrame()
-                                UpdateSize()
+                                UpdateSize()         
                             else
                                 for i,v in next, infoContainer:GetChildren() do
                                     Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
@@ -1770,7 +1774,7 @@ function Kavo.CreateLib(kavName, themeList)
                 local togName = Instance.new("TextLabel")
                 local viewInfo = Instance.new("ImageButton")
                 local touch = Instance.new("ImageLabel")
-                local Sample = Instance.new("ImageLabel")
+                -- Убрали Sample элемент для анимации клика
                 local togName_2 = Instance.new("TextLabel")
 
                 local ms = game.Players.LocalPlayer:GetMouse()
@@ -1780,7 +1784,7 @@ function Kavo.CreateLib(kavName, themeList)
                 local moreInfo = Instance.new("TextLabel")
                 local UICorner1 = Instance.new("UICorner")
 
-                local sample = Sample
+                -- Убрали sample переменную
 
                 keybindElement.Name = "keybindElement"
                 keybindElement.Parent = sectionInners
@@ -1799,21 +1803,6 @@ function Kavo.CreateLib(kavName, themeList)
                         if a.KeyCode.Name ~= "Unknown" then
                             togName_2.Text = a.KeyCode.Name
                             oldKey = a.KeyCode.Name;
-                        end
-                        local c = sample:Clone()
-                        c.Parent = keybindElement
-                        local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                        c.Position = UDim2.new(0, x, 0, y)
-                        local len, size = 0.35, nil
-                        if keybindElement.AbsoluteSize.X >= keybindElement.AbsoluteSize.Y then
-                            size = (keybindElement.AbsoluteSize.X * 1.5)
-                        else
-                            size = (keybindElement.AbsoluteSize.Y * 1.5)
-                        end
-                        c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                        for i = 1, 10 do
-                        c.ImageTransparency = c.ImageTransparency + 0.05
-                            wait(len / 12)
                         end
                     else
                         for i,v in next, infoContainer:GetChildren() do
@@ -1845,15 +1834,8 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.TextSize = 14.000
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
 
-                Sample.Name = "Sample"
-                Sample.Parent = keybindElement
-                Sample.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                Sample.BackgroundTransparency = 1.000
-                Sample.Image = "http://www.roblox.com/asset/?id=4560909609"
-                Sample.ImageColor3 = themeList.SchemeColor
-                Sample.ImageTransparency = 0.600
-
-                
+                -- Убрали Sample элемент
+        
                 togName.Name = "togName"
                 togName.Parent = keybindElement
                 togName.BackgroundColor3 = themeList.TextColor
@@ -1965,7 +1947,6 @@ function Kavo.CreateLib(kavName, themeList)
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         togName.BackgroundColor3 = themeList.TextColor
                         togName.TextColor3 = themeList.TextColor
-                        Sample.ImageColor3 = themeList.SchemeColor
                         moreInfo.TextColor3 = themeList.TextColor
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
 
@@ -2004,17 +1985,10 @@ function Kavo.CreateLib(kavName, themeList)
                 local togName_2 = Instance.new("TextLabel")
 
                 --Properties:
-                local Sample = Instance.new("ImageLabel")
-                Sample.Name = "Sample"
-                Sample.Parent = colorHeader
-                Sample.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                Sample.BackgroundTransparency = 1.000
-                Sample.Image = "http://www.roblox.com/asset/?id=4560909609"
-                Sample.ImageColor3 = themeList.SchemeColor
-                Sample.ImageTransparency = 0.600
+                -- Убрали Sample элемент для анимации клика
 
                 local btn = colorHeader
-                local sample = Sample
+                -- Убрали sample переменную
 
                 colorElement.Name = "colorElement"
                 colorElement.Parent = sectionInners
@@ -2036,44 +2010,12 @@ function Kavo.CreateLib(kavName, themeList)
                             wait(0.1)
                             updateSectionFrame()
                             UpdateSize()
-                            local c = sample:Clone()
-                            c.Parent = btn
-                            local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                            c.Position = UDim2.new(0, x, 0, y)
-                            local len, size = 0.35, nil
-                            if btn.AbsoluteSize.X >= btn.AbsoluteSize.Y then
-                                size = (btn.AbsoluteSize.X * 1.5)
-                            else
-                                size = (btn.AbsoluteSize.Y * 1.5)
-                            end
-                            c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                            for i = 1, 10 do
-                                c.ImageTransparency = c.ImageTransparency + 0.05
-                                wait(len / 12)
-                            end
-                            c:Destroy()
                         else
                             colorOpened = true
                             colorElement:TweenSize(UDim2.new(0, 352, 0, 141), "InOut", "Linear", 0.08, true)
                             wait(0.1)
                             updateSectionFrame()
                             UpdateSize()
-                            local c = sample:Clone()
-                            c.Parent = btn
-                            local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
-                            c.Position = UDim2.new(0, x, 0, y)
-                            local len, size = 0.35, nil
-                            if btn.AbsoluteSize.X >= btn.AbsoluteSize.Y then
-                                size = (btn.AbsoluteSize.X * 1.5)
-                            else
-                                size = (btn.AbsoluteSize.Y * 1.5)
-                            end
-                            c:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, (-size / 2), 0.5, (-size / 2)), 'Out', 'Quad', len, true, nil)
-                            for i = 1, 10 do
-                                c.ImageTransparency = c.ImageTransparency + 0.05
-                                wait(len / 12)
-                            end
-                            c:Destroy()
                         end
                     else
                         for i,v in next, infoContainer:GetChildren() do
@@ -2328,7 +2270,6 @@ function Kavo.CreateLib(kavName, themeList)
                         toggleDisabled.ImageColor3 = themeList.SchemeColor
                         toggleEnabled.ImageColor3 = themeList.SchemeColor
                         togName_2.TextColor3 = themeList.TextColor
-                        Sample.ImageColor3 = themeList.SchemeColor
                     end
                 end)()
                 updateSectionFrame()
@@ -2410,15 +2351,11 @@ function Kavo.CreateLib(kavName, themeList)
                 end
                 local function togglerainbow()
                     if rainbow then
-                        game.TweenService:Create(toggleEnabled, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
-                            ImageTransparency = 1
-                        }):Play()
+                        toggleEnabled.ImageTransparency = 1
                         rainbow = false
                         rainbowconnection:Disconnect()
                     else
-                        game.TweenService:Create(toggleEnabled, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
-                            ImageTransparency = 0
-                        }):Play()
+                        toggleEnabled.ImageTransparency = 0
                         rainbow = true
                         rainbowconnection = rs.RenderStepped:Connect(function()
                             setrgbcolor({zigzag(counter),1,1})
@@ -2442,53 +2379,60 @@ function Kavo.CreateLib(kavName, themeList)
             end
             
             function Elements:NewLabel(title)
-                local labelFunctions = {}
-                local label = Instance.new("TextLabel")
-                local UICorner = Instance.new("UICorner")
-                label.Name = "label"
-                label.Parent = sectionInners
-                label.BackgroundColor3 = themeList.SchemeColor
-                label.BorderSizePixel = 0
-                label.ClipsDescendants = true
-                label.Text = title
-                label.Size = UDim2.new(0, 352, 0, 33)
-                label.Font = Enum.Font.Gotham
-                label.Text = "  "..title
-                label.RichText = true
-                label.TextColor3 = themeList.TextColor
-                Objects[label] = "TextColor3"
-                label.TextSize = 14.000
-                label.TextXAlignment = Enum.TextXAlignment.Left
-                
-                UICorner.CornerRadius = UDim.new(0, 4)
+            	local labelFunctions = {}
+            	local label = Instance.new("TextLabel")
+            	local UICorner = Instance.new("UICorner")
+            	label.Name = "label"
+            	label.Parent = sectionInners
+            	label.BackgroundColor3 = themeList.SchemeColor
+            	label.BorderSizePixel = 0
+				label.ClipsDescendants = true
+            	label.Text = title
+           		label.Size = UDim2.new(0, 352, 0, 33)
+	            label.Font = Enum.Font.Gotham
+	            label.Text = "  "..title
+	            label.RichText = true
+	            label.TextColor3 = themeList.TextColor
+	            Objects[label] = "TextColor3"
+	            label.TextSize = 14.000
+	            label.TextXAlignment = Enum.TextXAlignment.Left
+	            
+	           	UICorner.CornerRadius = UDim.new(0, 4)
                 UICorner.Parent = label
-                
-                if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                    Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-                end 
-                if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                    Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                end 
+            	
+	            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+	                Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+	            end 
+	            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+	                Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+	            end 
 
-                coroutine.wrap(function()
-                    while wait() do
-                        label.BackgroundColor3 = themeList.SchemeColor
-                        label.TextColor3 = themeList.TextColor
-                    end
-                end)()
+		        coroutine.wrap(function()
+		            while wait() do
+		                label.BackgroundColor3 = themeList.SchemeColor
+		                label.TextColor3 = themeList.TextColor
+		            end
+		        end)()
                 updateSectionFrame()
                 UpdateSize()
                 function labelFunctions:UpdateLabel(newText)
-                    if label.Text ~= "  "..newText then
-                        label.Text = "  "..newText
-                    end
-                end 
+                	if label.Text ~= "  "..newText then
+                		label.Text = "  "..newText
+                	end
+                end	
                 return labelFunctions
-            end 
+            end	
             return Elements
         end
         return Sections
     end  
     return Tabs
 end
+
+-- Настройка переключения по клавише M после создания UI
+spawn(function()
+    wait(1) -- Небольшая задержка для инициализации
+    setupKeyToggle()
+end)
+
 return Kavo
