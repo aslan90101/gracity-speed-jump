@@ -50,7 +50,7 @@ textLabel.BackgroundTransparency = 1
 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textLabel.TextScaled = true
 textLabel.Font = Enum.Font.GothamBold
-textLabel.Text = "Перед тем как взаимодействовать с объектами — кликните по ним (возьмите/тапните), чтобы избежать багов"
+textLabel.Text = "Перед тем как взаимодействовать с объектами (скриптом) — кликните по ним (возьмите/тапните), чтобы избежать багов"
 textLabel.TextWrapped = true
 textLabel.Parent = mainFrame
 
