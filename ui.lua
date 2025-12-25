@@ -1,6 +1,3 @@
---// to the 2 peoplee who are constantly watching this repo, get a life yall weird.
---// to the people who are still forking this unoptimized garbage, if you want a custom optimized rewrite for $, hmu on discord: federal6768 or federal.
-
 local Kavo = {}
 
 local tween = game:GetService("TweenService")
@@ -14,7 +11,6 @@ function Kavo:DraggingEnabled(frame, parent)
         
     parent = parent or frame
     
-    -- stolen from wally or kiriot, kek
     local dragging = false
     local dragInput, mousePos, framePos
 
@@ -161,8 +157,7 @@ function Kavo:ToggleUI()
     end
 end
 
-function Kavo.CreateLib(kavName, themeList, options) -- // CHANGE: Added options
-    options = options or {showLoading = true, lazyLoading = true, disableAnimations = false}
+function Kavo.CreateLib(kavName, themeList)
     if not themeList then
         themeList = themes
     end
@@ -358,39 +353,6 @@ function Kavo.CreateLib(kavName, themeList, options) -- // CHANGE: Added options
     infoContainer.ClipsDescendants = true
     infoContainer.Position = UDim2.new(0.299047619, 0, 0.874213815, 0)
     infoContainer.Size = UDim2.new(0, 368, 0, 33)
-    -- // CHANGE: Added loading frame
-    local loadingFrame
-    if options.showLoading then
-        loadingFrame = Instance.new("Frame")
-        loadingFrame.Parent = Main
-        loadingFrame.BackgroundColor3 = themeList.Background
-        loadingFrame.Size = UDim2.new(1, 0, 1, 0)
-        loadingFrame.ZIndex = 1000
-        local loadingText = Instance.new("TextLabel")
-        loadingText.Parent = loadingFrame
-        loadingText.BackgroundTransparency = 1
-        loadingText.Position = UDim2.new(0.5, 0, 0.5, 0)
-        loadingText.Size = UDim2.new(0, 200, 0, 50)
-        loadingText.Font = Enum.Font.GothamBold
-        loadingText.Text = "Loading..."
-        loadingText.TextColor3 = themeList.TextColor
-        loadingText.TextSize = 24
-        loadingText.AnchorPoint = Vector2.new(0.5, 0.5)
-        -- Spinner
-        local spinner = Instance.new("ImageLabel")
-        spinner.Parent = loadingFrame
-        spinner.BackgroundTransparency = 1
-        spinner.Position = UDim2.new(0.5, 0, 0.4, 0)
-        spinner.Size = UDim2.new(0, 40, 0, 40)
-        spinner.Image = "rbxassetid://3926309567"
-        spinner.AnchorPoint = Vector2.new(0.5, 0.5)
-        run.RenderStepped:Connect(function()
-            if loadingFrame.Visible then
-                spinner.Rotation = spinner.Rotation + 5
-            end
-        end)
-    end
-    
 
     
     coroutine.wrap(function()
@@ -483,16 +445,6 @@ function Kavo.CreateLib(kavName, themeList, options) -- // CHANGE: Added options
         page.ChildRemoved:Connect(UpdateSize)
 
         tabButton.MouseButton1Click:Connect(function()
-        -- // CHANGE: Lazy loading for tab content
-        local loaded = false
-        tabButton.MouseButton1Click:Connect(function()
-            if not loaded and options.lazyLoading then
-                loaded = true
-                -- Load sections and elements here if needed (assuming they are created on demand)
-            end
-            -- (rest of the click handler)
-        end)
-    
             UpdateSize()
             for i,v in next, Pages:GetChildren() do
                 v.Visible = false
@@ -2470,10 +2422,6 @@ function Kavo.CreateLib(kavName, themeList, options) -- // CHANGE: Added options
         end
         return Sections
     end  
-    
-    if options.showLoading then
-        loadingFrame.Visible = false
-    end
     return Tabs
 end
 
