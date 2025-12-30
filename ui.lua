@@ -10,6 +10,7 @@ local run = game:GetService("RunService")
 
 local Utility = {}
 local Objects = {}
+
 function Kavo:DraggingEnabled(frame, parent)
         
     parent = parent or frame
@@ -195,7 +196,98 @@ function Kavo.CreateLib(kavName, themeList)
             v:Destroy()
         end
     end
+    
+    -- Создаем ScreenGui для всего интерфейса
     local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.Name = LibName
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Enabled = false -- Сначала отключаем, показываем только загрузку
+    
+    -- Создаем экран загрузки
+    local LoadingScreen = Instance.new("Frame")
+    local LoadingBackground = Instance.new("Frame")
+    local LoadingCorner = Instance.new("UICorner")
+    local LoadingTitle = Instance.new("TextLabel")
+    local LoadingText = Instance.new("TextLabel")
+    local LoadingBarBackground = Instance.new("Frame")
+    local LoadingBarCorner = Instance.new("UICorner")
+    local LoadingBar = Instance.new("Frame")
+    local LoadingBarInnerCorner = Instance.new("UICorner")
+    local LoadingPercentage = Instance.new("TextLabel")
+    
+    LoadingScreen.Name = "LoadingScreen"
+    LoadingScreen.Parent = ScreenGui
+    LoadingScreen.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    LoadingScreen.BackgroundTransparency = 0.3
+    LoadingScreen.Size = UDim2.new(1, 0, 1, 0)
+    LoadingScreen.ZIndex = 100
+    
+    LoadingBackground.Name = "LoadingBackground"
+    LoadingBackground.Parent = LoadingScreen
+    LoadingBackground.AnchorPoint = Vector2.new(0.5, 0.5)
+    LoadingBackground.BackgroundColor3 = themeList.Header
+    LoadingBackground.Position = UDim2.new(0.5, 0, 0.5, 0)
+    LoadingBackground.Size = UDim2.new(0, 400, 0, 200)
+    
+    LoadingCorner.CornerRadius = UDim.new(0, 8)
+    LoadingCorner.Name = "LoadingCorner"
+    LoadingCorner.Parent = LoadingBackground
+    
+    LoadingTitle.Name = "LoadingTitle"
+    LoadingTitle.Parent = LoadingBackground
+    LoadingTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    LoadingTitle.BackgroundTransparency = 1.000
+    LoadingTitle.Position = UDim2.new(0, 0, 0.1, 0)
+    LoadingTitle.Size = UDim2.new(1, 0, 0, 40)
+    LoadingTitle.Font = Enum.Font.GothamBold
+    LoadingTitle.Text = kavName
+    LoadingTitle.TextColor3 = themeList.TextColor
+    LoadingTitle.TextSize = 28.000
+    
+    LoadingText.Name = "LoadingText"
+    LoadingText.Parent = LoadingBackground
+    LoadingText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    LoadingText.BackgroundTransparency = 1.000
+    LoadingText.Position = UDim2.new(0, 0, 0.35, 0)
+    LoadingText.Size = UDim2.new(1, 0, 0, 30)
+    LoadingText.Font = Enum.Font.Gotham
+    LoadingText.Text = "Загрузка библиотеки..."
+    LoadingText.TextColor3 = themeList.TextColor
+    LoadingText.TextSize = 18.000
+    
+    LoadingBarBackground.Name = "LoadingBarBackground"
+    LoadingBarBackground.Parent = LoadingBackground
+    LoadingBarBackground.AnchorPoint = Vector2.new(0.5, 0)
+    LoadingBarBackground.BackgroundColor3 = themeList.ElementColor
+    LoadingBarBackground.Position = UDim2.new(0.5, 0, 0.65, 0)
+    LoadingBarBackground.Size = UDim2.new(0.8, 0, 0, 20)
+    
+    LoadingBarCorner.CornerRadius = UDim.new(0, 4)
+    LoadingBarCorner.Name = "LoadingBarCorner"
+    LoadingBarCorner.Parent = LoadingBarBackground
+    
+    LoadingBar.Name = "LoadingBar"
+    LoadingBar.Parent = LoadingBarBackground
+    LoadingBar.BackgroundColor3 = themeList.SchemeColor
+    LoadingBar.Size = UDim2.new(0, 0, 1, 0)
+    
+    LoadingBarInnerCorner.CornerRadius = UDim.new(0, 4)
+    LoadingBarInnerCorner.Name = "LoadingBarInnerCorner"
+    LoadingBarInnerCorner.Parent = LoadingBar
+    
+    LoadingPercentage.Name = "LoadingPercentage"
+    LoadingPercentage.Parent = LoadingBarBackground
+    LoadingPercentage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    LoadingPercentage.BackgroundTransparency = 1.000
+    LoadingPercentage.Size = UDim2.new(1, 0, 1, 0)
+    LoadingPercentage.Font = Enum.Font.GothamSemibold
+    LoadingPercentage.Text = "0%"
+    LoadingPercentage.TextColor3 = themeList.TextColor
+    LoadingPercentage.TextSize = 14.000
+    
+    -- Создаем основное меню (пока скрытое)
     local Main = Instance.new("Frame")
     local MainCorner = Instance.new("UICorner")
     local MainHeader = Instance.new("Frame")
@@ -210,24 +302,7 @@ function Kavo.CreateLib(kavName, themeList)
     local pages = Instance.new("Frame")
     local Pages = Instance.new("Folder")
     local infoContainer = Instance.new("Frame")
-
     local blurFrame = Instance.new("Frame")
-
-    Kavo:DraggingEnabled(MainHeader, Main)
-
-    blurFrame.Name = "blurFrame"
-    blurFrame.Parent = pages
-    blurFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    blurFrame.BackgroundTransparency = 1
-    blurFrame.BorderSizePixel = 0
-    blurFrame.Position = UDim2.new(-0.0222222228, 0, -0.0371747203, 0)
-    blurFrame.Size = UDim2.new(0, 376, 0, 289)
-    blurFrame.ZIndex = 999
-
-    ScreenGui.Parent = game.CoreGui
-    ScreenGui.Name = LibName
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.ResetOnSpawn = false
 
     Main.Name = "Main"
     Main.Parent = ScreenGui
@@ -235,6 +310,7 @@ function Kavo.CreateLib(kavName, themeList)
     Main.ClipsDescendants = true
     Main.Position = UDim2.new(0.336503863, 0, 0.275485456, 0)
     Main.Size = UDim2.new(0, 525, 0, 318)
+    Main.Visible = false -- Сначала скрываем основное меню
 
     MainCorner.CornerRadius = UDim.new(0, 4)
     MainCorner.Name = "MainCorner"
@@ -321,6 +397,64 @@ function Kavo.CreateLib(kavName, themeList)
     infoContainer.Position = UDim2.new(0.299047619, 0, 0.874213815, 0)
     infoContainer.Size = UDim2.new(0, 368, 0, 33)
 
+    blurFrame.Name = "blurFrame"
+    blurFrame.Parent = pages
+    blurFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    blurFrame.BackgroundTransparency = 1
+    blurFrame.BorderSizePixel = 0
+    blurFrame.Position = UDim2.new(-0.0222222228, 0, -0.0371747203, 0)
+    blurFrame.Size = UDim2.new(0, 376, 0, 289)
+    blurFrame.ZIndex = 999
+
+    Kavo:DraggingEnabled(MainHeader, Main)
+    
+    -- Включаем экран загрузки сразу
+    ScreenGui.Enabled = true
+    
+    -- Анимация загрузки
+    local loadTime = 5 -- 5 секунд загрузки
+    local startTime = tick()
+    local connection
+    
+    connection = game:GetService("RunService").RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local progress = math.min(elapsed / loadTime, 1)
+        
+        -- Обновляем прогресс бар
+        LoadingBar.Size = UDim2.new(progress, 0, 1, 0)
+        LoadingPercentage.Text = math.floor(progress * 100) .. "%"
+        
+        -- Обновляем текст загрузки
+        if progress < 0.25 then
+            LoadingText.Text = "Инициализация библиотеки..."
+        elseif progress < 0.5 then
+            LoadingText.Text = "Загрузка элементов интерфейса..."
+        elseif progress < 0.75 then
+            LoadingText.Text = "Настройка цветовых схем..."
+        else
+            LoadingText.Text = "Завершение загрузки..."
+        end
+        
+        -- Когда загрузка завершена
+        if progress >= 1 then
+            connection:Disconnect()
+            
+            -- Сначала скрываем экран загрузки
+            Utility:TweenObject(LoadingScreen, {BackgroundTransparency = 1}, 0.5)
+            Utility:TweenObject(LoadingBackground, {Size = UDim2.new(0, 0, 0, 0)}, 0.5)
+            
+            -- Ждем 0.5 секунды
+            wait(0.5)
+            
+            -- Удаляем экран загрузки
+            LoadingScreen:Destroy()
+            
+            -- Показываем основное меню
+            Main.Visible = true
+            Main.BackgroundTransparency = 1
+            Utility:TweenObject(Main, {BackgroundTransparency = 0}, 0.3)
+        end
+    end)
     
     coroutine.wrap(function()
         while wait() do
