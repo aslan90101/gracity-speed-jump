@@ -418,7 +418,7 @@ toggleButton:GetPropertyChangedSignal("Text"):Connect(function()
 end)
 
 -- Создаем ESP для игроков, которые уже в игре
-delay(3, function()
+delay(0.1, function()
     if espEnabled then
         refreshAllESP()
     end
