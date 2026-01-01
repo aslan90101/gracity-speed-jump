@@ -56,36 +56,43 @@ local themes = {
     SchemeColor = Color3.fromRGB(74, 99, 135),
     Background = Color3.fromRGB(36, 37, 43),
     Header = Color3.fromRGB(28, 29, 34),
-    TextColor = Color3.fromRGB(255,255,255),
+    TextColor = Color3.fromRGB(255, 255, 255), -- Изменено на белый
     ElementColor = Color3.fromRGB(32, 32, 38)
 }
 local themeStyles = {
+    Standard = {
+        SchemeColor = Color3.fromRGB(74, 99, 135),
+        Background = Color3.fromRGB(36, 37, 43),
+        Header = Color3.fromRGB(28, 29, 34),
+        TextColor = Color3.fromRGB(255, 255, 255),
+        ElementColor = Color3.fromRGB(32, 32, 38)
+    },
     DarkTheme = {
         SchemeColor = Color3.fromRGB(64, 64, 64),
         Background = Color3.fromRGB(0, 0, 0),
         Header = Color3.fromRGB(0, 0, 0),
-        TextColor = Color3.fromRGB(255,255,255),
+        TextColor = Color3.fromRGB(255, 255, 255),
         ElementColor = Color3.fromRGB(20, 20, 20)
     },
     LightTheme = {
         SchemeColor = Color3.fromRGB(150, 150, 150),
-        Background = Color3.fromRGB(255,255,255),
+        Background = Color3.fromRGB(255, 255, 255),
         Header = Color3.fromRGB(200, 200, 200),
-        TextColor = Color3.fromRGB(0,0,0),
+        TextColor = Color3.fromRGB(0, 0, 0),
         ElementColor = Color3.fromRGB(224, 224, 224)
     },
     BloodTheme = {
         SchemeColor = Color3.fromRGB(227, 27, 27),
         Background = Color3.fromRGB(10, 10, 10),
         Header = Color3.fromRGB(5, 5, 5),
-        TextColor = Color3.fromRGB(255,255,255),
+        TextColor = Color3.fromRGB(255, 255, 255),
         ElementColor = Color3.fromRGB(20, 20, 20)
     },
     GrapeTheme = {
         SchemeColor = Color3.fromRGB(166, 71, 214),
         Background = Color3.fromRGB(64, 50, 71),
         Header = Color3.fromRGB(36, 28, 41),
-        TextColor = Color3.fromRGB(255,255,255),
+        TextColor = Color3.fromRGB(255, 255, 255),
         ElementColor = Color3.fromRGB(74, 58, 84)
     },
     Ocean = {
@@ -106,22 +113,29 @@ local themeStyles = {
         SchemeColor = Color3.fromRGB(230, 35, 69),
         Background = Color3.fromRGB(32, 32, 32),
         Header = Color3.fromRGB(24, 24, 24),
-        TextColor = Color3.fromRGB(119, 209, 138),
+        TextColor = Color3.fromRGB(255, 255, 255), -- Изменено на белый
         ElementColor = Color3.fromRGB(24, 24, 24)
     },
     Synapse = {
         SchemeColor = Color3.fromRGB(46, 48, 43),
         Background = Color3.fromRGB(13, 15, 12),
         Header = Color3.fromRGB(36, 38, 35),
-        TextColor = Color3.fromRGB(152, 99, 53),
+        TextColor = Color3.fromRGB(255, 255, 255), -- Изменено на белый
         ElementColor = Color3.fromRGB(24, 24, 24)
     },
     Serpent = {
         SchemeColor = Color3.fromRGB(0, 166, 58),
         Background = Color3.fromRGB(31, 41, 43),
         Header = Color3.fromRGB(22, 29, 31),
-        TextColor = Color3.fromRGB(255,255,255),
+        TextColor = Color3.fromRGB(255, 255, 255),
         ElementColor = Color3.fromRGB(22, 29, 31)
+    },
+    Christmas = { -- Новая новогодняя тема
+        SchemeColor = Color3.fromRGB(220, 20, 60), -- Ярко-красный
+        Background = Color3.fromRGB(10, 40, 20), -- Темно-зеленый
+        Header = Color3.fromRGB(20, 60, 30), -- Зеленый
+        TextColor = Color3.fromRGB(255, 255, 255), -- Белый
+        ElementColor = Color3.fromRGB(30, 70, 40) -- Светло-зеленый
     }
 }
 local oldTheme = ""
@@ -173,6 +187,10 @@ function Kavo.CreateLib(kavName, themeList)
         themeList = themeStyles.Synapse
     elseif themeList == "Serpent" then
         themeList = themeStyles.Serpent
+    elseif themeList == "Christmas" then
+        themeList = themeStyles.Christmas
+    elseif themeList == "Standard" then
+        themeList = themeStyles.Standard
     else
         if themeList.SchemeColor == nil then
             themeList.SchemeColor = Color3.fromRGB(74, 99, 135)
@@ -181,7 +199,7 @@ function Kavo.CreateLib(kavName, themeList)
         elseif themeList.Header == nil then
             themeList.Header = Color3.fromRGB(28, 29, 34)
         elseif themeList.TextColor == nil then
-            themeList.TextColor = Color3.fromRGB(255,255,255)
+            themeList.TextColor = Color3.fromRGB(255, 255, 255)
         elseif themeList.ElementColor == nil then
             themeList.ElementColor = Color3.fromRGB(32, 32, 38)
         end
@@ -216,6 +234,7 @@ function Kavo.CreateLib(kavName, themeList)
     local LoadingBar = Instance.new("Frame")
     local LoadingBarInnerCorner = Instance.new("UICorner")
     local LoadingPercentage = Instance.new("TextLabel")
+    local Snowflakes = Instance.new("Folder")
     
     LoadingScreen.Name = "LoadingScreen"
     LoadingScreen.Parent = ScreenGui
@@ -223,6 +242,25 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingScreen.BackgroundTransparency = 0.3
     LoadingScreen.Size = UDim2.new(1, 0, 1, 0)
     LoadingScreen.ZIndex = 100
+    
+    -- Создаем снежинки для новогодней атмосферы
+    Snowflakes.Name = "Snowflakes"
+    Snowflakes.Parent = LoadingScreen
+    
+    for i = 1, 30 do
+        local snowflake = Instance.new("ImageLabel")
+        snowflake.Name = "Snowflake" .. i
+        snowflake.Parent = Snowflakes
+        snowflake.BackgroundTransparency = 1
+        snowflake.Image = "rbxassetid://3926305904"
+        snowflake.ImageColor3 = Color3.fromRGB(255, 255, 255)
+        snowflake.ImageRectOffset = Vector2.new(644, 204)
+        snowflake.ImageRectSize = Vector2.new(36, 36)
+        snowflake.Size = UDim2.new(0, math.random(10, 25), 0, math.random(10, 25))
+        snowflake.Position = UDim2.new(0, math.random(0, 1000), 0, math.random(-100, 0))
+        snowflake.ZIndex = 101
+        snowflake.Rotation = math.random(0, 360)
+    end
     
     LoadingBackground.Name = "LoadingBackground"
     LoadingBackground.Parent = LoadingScreen
@@ -243,7 +281,7 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingTitle.Size = UDim2.new(1, 0, 0, 40)
     LoadingTitle.Font = Enum.Font.GothamBold
     LoadingTitle.Text = "Endoris Script"
-    LoadingTitle.TextColor3 = themeList.TextColor
+    LoadingTitle.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
     LoadingTitle.TextSize = 28.000
     
     LoadingText.Name = "LoadingText"
@@ -254,7 +292,7 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingText.Size = UDim2.new(1, 0, 0, 30)
     LoadingText.Font = Enum.Font.Gotham
     LoadingText.Text = "Загрузка библиотеки..."
-    LoadingText.TextColor3 = themeList.TextColor
+    LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
     LoadingText.TextSize = 18.000
     
     LoadingBarBackground.Name = "LoadingBarBackground"
@@ -284,7 +322,7 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingPercentage.Size = UDim2.new(1, 0, 1, 0)
     LoadingPercentage.Font = Enum.Font.GothamSemibold
     LoadingPercentage.Text = "0%"
-    LoadingPercentage.TextColor3 = themeList.TextColor
+    LoadingPercentage.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
     LoadingPercentage.TextSize = 14.000
     
     -- Создаем основное меню (пока скрытое)
@@ -295,6 +333,12 @@ function Kavo.CreateLib(kavName, themeList)
     local coverup = Instance.new("Frame")
     local title = Instance.new("TextLabel")
     local robloxInfo = Instance.new("TextLabel")
+    local themeSelector = Instance.new("TextButton")
+    local themeSelectorCorner = Instance.new("UICorner")
+    local themeSelectorText = Instance.new("TextLabel")
+    local themeDropdown = Instance.new("Frame")
+    local themeDropdownList = Instance.new("UIListLayout")
+    local themeDropdownCorner = Instance.new("UICorner")
     local MainSide = Instance.new("Frame")
     local sideCorner = Instance.new("UICorner")
     local coverup_2 = Instance.new("Frame")
@@ -304,6 +348,74 @@ function Kavo.CreateLib(kavName, themeList)
     local Pages = Instance.new("Folder")
     local infoContainer = Instance.new("Frame")
     local blurFrame = Instance.new("Frame")
+    
+    -- Новогодние украшения (шары)
+    local Decorations = Instance.new("Folder")
+    Decorations.Name = "Decorations"
+    Decorations.Parent = Main
+    
+    -- Создаем новогодние шары
+    local function createDecorationBall(position, size, color)
+        local ball = Instance.new("Frame")
+        ball.Name = "ChristmasBall"
+        ball.Parent = Decorations
+        ball.BackgroundColor3 = color
+        ball.Size = size
+        ball.Position = position
+        ball.ZIndex = 1 -- Низкий z-index чтобы не перекрывать элементы
+        
+        local ballCorner = Instance.new("UICorner")
+        ballCorner.CornerRadius = UDim.new(1, 0)
+        ballCorner.Parent = ball
+        
+        -- Добавляем блеск
+        local shine = Instance.new("Frame")
+        shine.Name = "Shine"
+        shine.Parent = ball
+        shine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        shine.BackgroundTransparency = 0.7
+        shine.Size = UDim2.new(0.3, 0, 0.3, 0)
+        shine.Position = UDim2.new(0.1, 0, 0.1, 0)
+        
+        local shineCorner = Instance.new("UICorner")
+        shineCorner.CornerRadius = UDim.new(1, 0)
+        shineCorner.Parent = shine
+        
+        -- Крючок для шара
+        local hook = Instance.new("Frame")
+        hook.Name = "Hook"
+        hook.Parent = ball
+        hook.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Коричневый
+        hook.Size = UDim2.new(0.15, 0, 0.3, 0)
+        hook.Position = UDim2.new(0.425, 0, -0.3, 0)
+        
+        return ball
+    end
+    
+    -- Создаем несколько новогодних шаров
+    local ballColors = {
+        Color3.fromRGB(220, 20, 60), -- Красный
+        Color3.fromRGB(255, 215, 0), -- Золотой
+        Color3.fromRGB(30, 144, 255), -- Синий
+        Color3.fromRGB(50, 205, 50), -- Зеленый
+        Color3.fromRGB(255, 140, 0)  -- Оранжевый
+    }
+    
+    local ballPositions = {
+        UDim2.new(0.02, 0, 0.05, 0),
+        UDim2.new(0.95, 0, 0.1, 0),
+        UDim2.new(0.05, 0, 0.9, 0),
+        UDim2.new(0.9, 0, 0.85, 0),
+        UDim2.new(0.5, 0, 0.03, 0)
+    }
+    
+    local ballSizes = {
+        UDim2.new(0, 20, 0, 20),
+        UDim2.new(0, 25, 0, 25),
+        UDim2.new(0, 18, 0, 18),
+        UDim2.new(0, 22, 0, 22),
+        UDim2.new(0, 15, 0, 15)
+    }
 
     Main.Name = "Main"
     Main.Parent = ScreenGui
@@ -344,7 +456,7 @@ function Kavo.CreateLib(kavName, themeList)
     title.Font = Enum.Font.GothamBold
     title.RichText = true
     title.Text = "Endoris Script"
-    title.TextColor3 = themeList.TextColor
+    title.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
     title.TextSize = 16.000
     title.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -358,9 +470,122 @@ function Kavo.CreateLib(kavName, themeList)
     robloxInfo.Font = Enum.Font.Gotham
     robloxInfo.RichText = true
     robloxInfo.Text = "roblox: 5fkX0ofvlGfU"
-    robloxInfo.TextColor3 = Color3.fromRGB(150, 150, 150)
+    robloxInfo.TextColor3 = Color3.fromRGB(200, 200, 200) -- Светло-серый
     robloxInfo.TextSize = 11.000
     robloxInfo.TextXAlignment = Enum.TextXAlignment.Right
+
+    -- Создаем выпадающий список для выбора темы
+    themeSelector.Name = "themeSelector"
+    themeSelector.Parent = MainHeader
+    themeSelector.BackgroundColor3 = themeList.SchemeColor
+    themeSelector.Position = UDim2.new(0.85, 0, 0.1, 0)
+    themeSelector.Size = UDim2.new(0, 70, 0, 23)
+    themeSelector.AutoButtonColor = false
+    themeSelector.Font = Enum.Font.SourceSans
+    themeSelector.Text = ""
+    themeSelector.TextColor3 = Color3.fromRGB(0, 0, 0)
+    themeSelector.TextSize = 14.000
+    themeSelector.ZIndex = 10
+    
+    themeSelectorCorner.CornerRadius = UDim.new(0, 4)
+    themeSelectorCorner.Name = "themeSelectorCorner"
+    themeSelectorCorner.Parent = themeSelector
+    
+    themeSelectorText.Name = "themeSelectorText"
+    themeSelectorText.Parent = themeSelector
+    themeSelectorText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    themeSelectorText.BackgroundTransparency = 1.000
+    themeSelectorText.Size = UDim2.new(1, 0, 1, 0)
+    themeSelectorText.Font = Enum.Font.GothamSemibold
+    themeSelectorText.Text = "Тема"
+    themeSelectorText.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+    themeSelectorText.TextSize = 12.000
+    
+    themeDropdown.Name = "themeDropdown"
+    themeDropdown.Parent = MainHeader
+    themeDropdown.BackgroundColor3 = themeList.ElementColor
+    themeDropdown.Position = UDim2.new(0.85, 0, 1.5, 0)
+    themeDropdown.Size = UDim2.new(0, 70, 0, 0)
+    themeDropdown.ClipsDescendants = true
+    themeDropdown.Visible = false
+    themeDropdown.ZIndex = 15
+    
+    themeDropdownCorner.CornerRadius = UDim.new(0, 4)
+    themeDropdownCorner.Parent = themeDropdown
+    
+    themeDropdownList.Name = "themeDropdownList"
+    themeDropdownList.Parent = themeDropdown
+    themeDropdownList.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    local themeOptions = {"Standard", "Christmas"}
+    
+    for _, themeName in pairs(themeOptions) do
+        local themeOption = Instance.new("TextButton")
+        themeOption.Name = themeName .. "Option"
+        themeOption.Parent = themeDropdown
+        themeOption.BackgroundColor3 = themeList.ElementColor
+        themeOption.Size = UDim2.new(1, 0, 0, 25)
+        themeOption.AutoButtonColor = false
+        themeOption.Font = Enum.Font.Gotham
+        themeOption.Text = themeName
+        themeOption.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+        themeOption.TextSize = 12.000
+        themeOption.ZIndex = 16
+        
+        local themeOptionCorner = Instance.new("UICorner")
+        themeOptionCorner.CornerRadius = UDim.new(0, 4)
+        themeOptionCorner.Parent = themeOption
+        
+        themeOption.MouseButton1Click:Connect(function()
+            if themeName == "Christmas" then
+                themeList = themeStyles.Christmas
+            else
+                themeList = themeStyles.Standard
+            end
+            
+            -- Обновляем все цвета в интерфейсе
+            for obj, property in pairs(Objects) do
+                if themeList[property] then
+                    obj[property] = themeList[property]
+                end
+            end
+            
+            -- Обновляем цвета основных элементов
+            Main.BackgroundColor3 = themeList.Background
+            MainHeader.BackgroundColor3 = themeList.Header
+            MainSide.BackgroundColor3 = themeList.Header
+            coverup_2.BackgroundColor3 = themeList.Header
+            coverup.BackgroundColor3 = themeList.Header
+            title.TextColor3 = themeList.TextColor
+            themeSelector.BackgroundColor3 = themeList.SchemeColor
+            
+            -- Закрываем выпадающий список
+            themeDropdown.Visible = false
+            themeDropdown.Size = UDim2.new(0, 70, 0, 0)
+        end)
+        
+        themeOption.MouseEnter:Connect(function()
+            game.TweenService:Create(themeOption, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 20, themeList.ElementColor.g * 255 + 20, themeList.ElementColor.b * 255 + 20)
+            }):Play()
+        end)
+        
+        themeOption.MouseLeave:Connect(function()
+            game.TweenService:Create(themeOption, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                BackgroundColor3 = themeList.ElementColor
+            }):Play()
+        end)
+    end
+    
+    themeSelector.MouseButton1Click:Connect(function()
+        if themeDropdown.Visible then
+            themeDropdown.Visible = false
+            themeDropdown:TweenSize(UDim2.new(0, 70, 0, 0), "InOut", "Linear", 0.2)
+        else
+            themeDropdown.Visible = true
+            themeDropdown:TweenSize(UDim2.new(0, 70, 0, #themeOptions * 25), "InOut", "Linear", 0.2)
+        end
+    end)
 
     MainSide.Name = "MainSide"
     MainSide.Parent = Main
@@ -426,6 +651,29 @@ function Kavo.CreateLib(kavName, themeList)
     -- Включаем экран загрузки сразу
     ScreenGui.Enabled = true
     
+    -- Анимация снежинок
+    for _, snowflake in pairs(Snowflakes:GetChildren()) do
+        if snowflake:IsA("ImageLabel") then
+            spawn(function()
+                while snowflake.Parent do
+                    snowflake.Position = UDim2.new(
+                        0, 
+                        snowflake.Position.X.Offset + math.random(-2, 2),
+                        0,
+                        snowflake.Position.Y.Offset + 2
+                    )
+                    
+                    if snowflake.Position.Y.Offset > 600 then
+                        snowflake.Position = UDim2.new(0, math.random(0, 1000), 0, -50)
+                    end
+                    
+                    snowflake.Rotation = snowflake.Rotation + 0.5
+                    wait(0.05)
+                end
+            end)
+        end
+    end
+    
     -- Анимация загрузки
     local loadTime = 5 -- 5 секунд загрузки
     local startTime = tick()
@@ -454,6 +702,11 @@ function Kavo.CreateLib(kavName, themeList)
         if progress >= 1 then
             connection:Disconnect()
             
+            -- Создаем новогодние шары после загрузки
+            for i = 1, #ballPositions do
+                createDecorationBall(ballPositions[i], ballSizes[i], ballColors[i])
+            end
+            
             -- Сначала скрываем экран загрузки
             Utility:TweenObject(LoadingScreen, {BackgroundTransparency = 1}, 0.5)
             Utility:TweenObject(LoadingBackground, {Size = UDim2.new(0, 0, 0, 0)}, 0.5)
@@ -478,8 +731,11 @@ function Kavo.CreateLib(kavName, themeList)
             MainSide.BackgroundColor3 = themeList.Header
             coverup_2.BackgroundColor3 = themeList.Header
             coverup.BackgroundColor3 = themeList.Header
-            title.TextColor3 = themeList.TextColor
-            robloxInfo.TextColor3 = Color3.fromRGB(150, 150, 150)
+            title.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+            robloxInfo.TextColor3 = Color3.fromRGB(200, 200, 200)
+            themeSelector.BackgroundColor3 = themeList.SchemeColor
+            themeSelectorText.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+            themeDropdown.BackgroundColor3 = themeList.ElementColor
         end
     end)()
 
@@ -539,7 +795,7 @@ function Kavo.CreateLib(kavName, themeList)
         tabButton.AutoButtonColor = false
         tabButton.Font = Enum.Font.Gotham
         tabButton.Text = tabName
-        tabButton.TextColor3 = themeList.TextColor
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
         Objects[tabButton] = "TextColor3"
         tabButton.TextSize = 14.000
         tabButton.BackgroundTransparency = 1
@@ -595,7 +851,7 @@ function Kavo.CreateLib(kavName, themeList)
             while wait() do
                 page.BackgroundColor3 = themeList.Background
                 page.ScrollBarImageColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 16, themeList.SchemeColor.g * 255 - 15, themeList.SchemeColor.b * 255 - 28)
-                tabButton.TextColor3 = themeList.TextColor
+                tabButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 tabButton.BackgroundColor3 = themeList.SchemeColor
             end
         end)()
@@ -662,7 +918,7 @@ function Kavo.CreateLib(kavName, themeList)
             sectionName.Font = Enum.Font.Gotham
             sectionName.Text = secName
             sectionName.RichText = true
-            sectionName.TextColor3 = themeList.TextColor
+            sectionName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
             Objects[sectionName] = "TextColor3"
             sectionName.TextSize = 14.000
             sectionName.TextXAlignment = Enum.TextXAlignment.Left
@@ -689,9 +945,9 @@ function Kavo.CreateLib(kavName, themeList)
             while wait() do
                 sectionFrame.BackgroundColor3 = themeList.Background
                 sectionHead.BackgroundColor3 = themeList.SchemeColor
-                tabButton.TextColor3 = themeList.TextColor
+                tabButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 tabButton.BackgroundColor3 = themeList.SchemeColor
-                sectionName.TextColor3 = themeList.TextColor
+                sectionName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
             end
         end)()
 
@@ -759,7 +1015,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.Text = "  "..tipINf
                 moreInfo.RichText = true
-                moreInfo.TextColor3 = themeList.TextColor
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 Objects[moreInfo] = "TextColor3"
                 moreInfo.TextSize = 14.000
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
@@ -791,7 +1047,7 @@ function Kavo.CreateLib(kavName, themeList)
                 btnInfo.Font = Enum.Font.GothamSemibold
                 btnInfo.Text = bname
                 btnInfo.RichText = true
-                btnInfo.TextColor3 = themeList.TextColor
+                btnInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 Objects[btnInfo] = "TextColor3"
                 btnInfo.TextSize = 14.000
                 btnInfo.TextXAlignment = Enum.TextXAlignment.Left
@@ -865,9 +1121,9 @@ function Kavo.CreateLib(kavName, themeList)
                         end
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        moreInfo.TextColor3 = themeList.TextColor
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         touch.ImageColor3 = themeList.SchemeColor
-                        btnInfo.TextColor3 = themeList.TextColor
+                        btnInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     end
                 end)()
                 
@@ -954,7 +1210,7 @@ function Kavo.CreateLib(kavName, themeList)
                 togName.Font = Enum.Font.GothamSemibold
                 togName.Text = tname
                 togName.RichText = true
-                togName.TextColor3 = themeList.TextColor
+                togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 togName.TextSize = 14.000
                 togName.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -970,7 +1226,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.RichText = true
                 moreInfo.Text = "  "..tTip
-                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 moreInfo.TextSize = 14.000
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1064,9 +1320,9 @@ function Kavo.CreateLib(kavName, themeList)
                         TextBox.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 - 6, themeList.ElementColor.g * 255 - 6, themeList.ElementColor.b * 255 - 7)
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        moreInfo.TextColor3 = themeList.TextColor
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         write.ImageColor3 = themeList.SchemeColor
-                        togName.TextColor3 = themeList.TextColor
+                        togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         TextBox.PlaceholderColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 19, themeList.SchemeColor.g * 255 - 26, themeList.SchemeColor.b * 255 - 35)
                         TextBox.TextColor3 = themeList.SchemeColor
                     end
@@ -1134,7 +1390,7 @@ function Kavo.CreateLib(kavName, themeList)
                     togName.Font = Enum.Font.GothamSemibold
                     togName.Text = tname
                     togName.RichText = true
-                    togName.TextColor3 = themeList.TextColor
+                    togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     togName.TextSize = 14.000
                     togName.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1162,7 +1418,7 @@ function Kavo.CreateLib(kavName, themeList)
                     moreInfo.Font = Enum.Font.GothamSemibold
                     moreInfo.RichText = true
                     moreInfo.Text = "  "..nTip
-                    moreInfo.TextColor3 = themeList.TextColor
+                    moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     moreInfo.TextSize = 14.000
                     moreInfo.TextXAlignment = Enum.TextXAlignment.Left
     
@@ -1228,10 +1484,10 @@ function Kavo.CreateLib(kavName, themeList)
                             end
                             toggleDisabled.ImageColor3 = themeList.SchemeColor
                             toggleEnabled.ImageColor3 = themeList.SchemeColor
-                            togName.TextColor3 = themeList.TextColor
+                            togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                             viewInfo.ImageColor3 = themeList.SchemeColor
                             moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                            moreInfo.TextColor3 = themeList.TextColor
+                            moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         end
                     end)()
                     viewInfo.MouseButton1Click:Connect(function()
@@ -1315,7 +1571,7 @@ function Kavo.CreateLib(kavName, themeList)
                 togName.Font = Enum.Font.GothamSemibold
                 togName.Text = slidInf
                 togName.RichText = true
-                togName.TextColor3 = themeList.TextColor
+                togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 togName.TextSize = 14.000
                 togName.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1378,7 +1634,7 @@ function Kavo.CreateLib(kavName, themeList)
                 val.Size = UDim2.new(0, 41, 0, 14)
                 val.Font = Enum.Font.GothamSemibold
                 val.Text = minvalue
-                val.TextColor3 = themeList.TextColor
+                val.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 val.TextSize = 14.000
                 val.TextTransparency = 1.000
                 val.TextXAlignment = Enum.TextXAlignment.Right
@@ -1394,7 +1650,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.ZIndex = 9
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.Text = "  "..slidTip
-                moreInfo.TextColor3 = themeList.TextColor
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 moreInfo.TextSize = 14.000
                 moreInfo.RichText = true
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
@@ -1441,11 +1697,11 @@ function Kavo.CreateLib(kavName, themeList)
                         if not hovering then
                             sliderElement.BackgroundColor3 = themeList.ElementColor
                         end
-                        moreInfo.TextColor3 = themeList.TextColor
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        val.TextColor3 = themeList.TextColor
+                        val.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         write.ImageColor3 = themeList.SchemeColor
-                        togName.TextColor3 = themeList.TextColor
+                        togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         sliderBtn.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 5, themeList.ElementColor.g * 255 + 5, themeList.ElementColor.b * 255  + 5)
                         sliderDrag.BackgroundColor3 = themeList.SchemeColor
@@ -1597,7 +1853,7 @@ function Kavo.CreateLib(kavName, themeList)
                 itemTextbox.Font = Enum.Font.GothamSemibold
                 itemTextbox.Text = dropname
                 itemTextbox.RichText = true
-                itemTextbox.TextColor3 = themeList.TextColor
+                itemTextbox.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 itemTextbox.TextSize = 14.000
                 itemTextbox.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1639,7 +1895,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.RichText = true
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.Text = "  "..dropinf
-                moreInfo.TextColor3 = themeList.TextColor
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 moreInfo.TextSize = 14.000
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1667,10 +1923,10 @@ function Kavo.CreateLib(kavName, themeList)
                         end
                         dropFrame.BackgroundColor3 = themeList.Background
                         listImg.ImageColor3 = themeList.SchemeColor
-                        itemTextbox.TextColor3 = themeList.TextColor
+                        itemTextbox.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        moreInfo.TextColor3 = themeList.TextColor
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     end
                 end)()
                 UICorner.CornerRadius = UDim.new(0, 4)
@@ -1915,7 +2171,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.RichText = true
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.Text = "  "..keyinf
-                moreInfo.TextColor3 = themeList.TextColor
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 moreInfo.TextSize = 14.000
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1929,7 +2185,7 @@ function Kavo.CreateLib(kavName, themeList)
                 togName.Font = Enum.Font.GothamSemibold
                 togName.Text = keytext
                 togName.RichText = true
-                togName.TextColor3 = themeList.TextColor
+                togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 togName.TextSize = 14.000
                 togName.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -2030,8 +2286,8 @@ function Kavo.CreateLib(kavName, themeList)
                         touch.ImageColor3 = themeList.SchemeColor
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         togName.BackgroundColor3 = themeList.TextColor
-                        togName.TextColor3 = themeList.TextColor
-                        moreInfo.TextColor3 = themeList.TextColor
+                        togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
 
                     end
@@ -2135,7 +2391,7 @@ function Kavo.CreateLib(kavName, themeList)
                 togName.Size = UDim2.new(0, 288, 0, 14)
                 togName.Font = Enum.Font.GothamSemibold
                 togName.Text = colText
-                togName.TextColor3 = themeList.TextColor
+                togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 togName.TextSize = 14.000
                 togName.RichText = true
                 togName.TextXAlignment = Enum.TextXAlignment.Left
@@ -2151,7 +2407,7 @@ function Kavo.CreateLib(kavName, themeList)
                 moreInfo.ZIndex = 9
                 moreInfo.Font = Enum.Font.GothamSemibold
                 moreInfo.Text = "  "..colInf
-                moreInfo.TextColor3 = themeList.TextColor
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 moreInfo.TextSize = 14.000
                 moreInfo.RichText = true
                 moreInfo.TextXAlignment = Enum.TextXAlignment.Left
@@ -2298,7 +2554,7 @@ function Kavo.CreateLib(kavName, themeList)
                 togName_2.Size = UDim2.new(0, 278, 0, 14)
                 togName_2.Font = Enum.Font.GothamSemibold
                 togName_2.Text = "Rainbow"
-                togName_2.TextColor3 = themeList.TextColor
+                togName_2.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 togName_2.TextSize = 14.000
                 togName_2.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -2340,14 +2596,14 @@ function Kavo.CreateLib(kavName, themeList)
                         end
                         touch.ImageColor3 = themeList.SchemeColor
                         colorHeader.BackgroundColor3 = themeList.ElementColor
-                        togName.TextColor3 = themeList.TextColor
+                        togName.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        moreInfo.TextColor3 = themeList.TextColor
+                        moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                         viewInfo.ImageColor3 = themeList.SchemeColor
                         colorInners.BackgroundColor3 = themeList.ElementColor
                         toggleDisabled.ImageColor3 = themeList.SchemeColor
                         toggleEnabled.ImageColor3 = themeList.SchemeColor
-                        togName_2.TextColor3 = themeList.TextColor
+                        togName_2.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     end
                 end)()
                 updateSectionFrame()
@@ -2470,7 +2726,7 @@ function Kavo.CreateLib(kavName, themeList)
                 label.Font = Enum.Font.Gotham
                 label.Text = "  "..title
                 label.RichText = true
-                label.TextColor3 = themeList.TextColor
+                label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                 Objects[label] = "TextColor3"
                 label.TextSize = 14.000
                 label.TextXAlignment = Enum.TextXAlignment.Left
@@ -2488,7 +2744,7 @@ function Kavo.CreateLib(kavName, themeList)
                 coroutine.wrap(function()
                     while wait() do
                         label.BackgroundColor3 = themeList.SchemeColor
-                        label.TextColor3 = themeList.TextColor
+                        label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
                     end
                 end)()
                 updateSectionFrame()
