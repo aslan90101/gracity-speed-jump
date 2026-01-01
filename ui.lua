@@ -242,7 +242,7 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingTitle.Position = UDim2.new(0, 0, 0.1, 0)
     LoadingTitle.Size = UDim2.new(1, 0, 0, 40)
     LoadingTitle.Font = Enum.Font.GothamBold
-    LoadingTitle.Text = kavName
+    LoadingTitle.Text = "Endoris Script"
     LoadingTitle.TextColor3 = themeList.TextColor
     LoadingTitle.TextSize = 28.000
     
@@ -294,6 +294,7 @@ function Kavo.CreateLib(kavName, themeList)
     local headerCover = Instance.new("UICorner")
     local coverup = Instance.new("Frame")
     local title = Instance.new("TextLabel")
+    local robloxInfo = Instance.new("TextLabel")
     local MainSide = Instance.new("Frame")
     local sideCorner = Instance.new("UICorner")
     local coverup_2 = Instance.new("Frame")
@@ -340,12 +341,26 @@ function Kavo.CreateLib(kavName, themeList)
     title.BorderSizePixel = 0
     title.Position = UDim2.new(0.0171428565, 0, 0.344827592, 0)
     title.Size = UDim2.new(0, 204, 0, 8)
-    title.Font = Enum.Font.Gotham
+    title.Font = Enum.Font.GothamBold
     title.RichText = true
-    title.Text = kavName
-    title.TextColor3 = Color3.fromRGB(245, 245, 245)
+    title.Text = "Endoris Script"
+    title.TextColor3 = themeList.TextColor
     title.TextSize = 16.000
     title.TextXAlignment = Enum.TextXAlignment.Left
+
+    robloxInfo.Name = "robloxInfo"
+    robloxInfo.Parent = MainHeader
+    robloxInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    robloxInfo.BackgroundTransparency = 1.000
+    robloxInfo.BorderSizePixel = 0
+    robloxInfo.Position = UDim2.new(0.7, 0, 0.344827592, 0)
+    robloxInfo.Size = UDim2.new(0, 150, 0, 8)
+    robloxInfo.Font = Enum.Font.Gotham
+    robloxInfo.RichText = true
+    robloxInfo.Text = "roblox: 5fkX0ofvlGfU"
+    robloxInfo.TextColor3 = Color3.fromRGB(150, 150, 150)
+    robloxInfo.TextSize = 11.000
+    robloxInfo.TextXAlignment = Enum.TextXAlignment.Right
 
     MainSide.Name = "MainSide"
     MainSide.Parent = Main
@@ -463,6 +478,8 @@ function Kavo.CreateLib(kavName, themeList)
             MainSide.BackgroundColor3 = themeList.Header
             coverup_2.BackgroundColor3 = themeList.Header
             coverup.BackgroundColor3 = themeList.Header
+            title.TextColor3 = themeList.TextColor
+            robloxInfo.TextColor3 = Color3.fromRGB(150, 150, 150)
         end
     end)()
 
@@ -784,7 +801,7 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
                 if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
                     Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                end 
+                end
 
                 updateSectionFrame()
                                 UpdateSize()
