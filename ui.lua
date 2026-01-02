@@ -104,10 +104,10 @@ local themeStyles = {
     },
     Sentinel = {
         SchemeColor = Color3.fromRGB(64, 64, 64),
-        Background = Color3.fromRGB(32, 32, 32),
-        Header = Color3.fromRGB(24, 24, 24),
-        TextColor = Color3.fromRGB(255, 255, 255),
-        ElementColor = Color3.fromRGB(24, 24, 24)
+        Background = Color3.fromRGB(0, 0, 0),
+        Header = Color3.fromRGB(0, 0, 0),
+        TextColor = Color3.fromRGB(255,255,255),
+        ElementColor = Color3.fromRGB(20, 20, 20)
     },
     Synapse = {
         SchemeColor = Color3.fromRGB(46, 48, 43),
