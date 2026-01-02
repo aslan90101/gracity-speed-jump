@@ -220,7 +220,7 @@ function Kavo.CreateLib(kavName, themeList)
     LoadingScreen.Name = "LoadingScreen"
     LoadingScreen.Parent = ScreenGui
     LoadingScreen.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    LoadingScreen.BackgroundTransparency = 0.3
+    LoadingScreen.BackgroundTransparency = 1
     LoadingScreen.Size = UDim2.new(1, 0, 1, 0)
     LoadingScreen.ZIndex = 100
     
