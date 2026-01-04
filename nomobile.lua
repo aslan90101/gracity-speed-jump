@@ -5,19 +5,37 @@ _G.AntiMobileInject = {}
 _G.AntiMobileInject.CheckPlatform = function()
     local UserInputService = game:GetService("UserInputService")
     local Players = game:GetService("Players")
+    local StarterGui = game:GetService("StarterGui")
     local LocalPlayer = Players.LocalPlayer
     
     -- Проверка на мобильную платформу
     if UserInputService.TouchEnabled and not UserInputService.MouseEnabled and not UserInputService.KeyboardEnabled then
-        -- Кикаем игрока
-        LocalPlayer:Kick("скрипт для компьютеров\\script for pc")
+        -- Показываем окно с сообщением
+        StarterGui:SetCore("SendNotification", {
+            Title = "Ошибка платформы",
+            Text = "скрипт для компьютеров\\script for pc",
+            Duration = math.huge, -- Сообщение не исчезнет само
+            Button1 = "OK",
+            Callback = function()
+                -- При нажатии OK кикаем игрока
+                LocalPlayer:Kick("скрипт для компьютеров\\script for pc")
+            end
+        })
         return true
     end
     
     -- Дополнительные проверки
     if UserInputService:GetPlatform() == Enum.Platform.IOS or 
        UserInputService:GetPlatform() == Enum.Platform.Android then
-        LocalPlayer:Kick("скрипт для компьютеров\\script for pc")
+        StarterGui:SetCore("SendNotification", {
+            Title = "Ошибка платформы",
+            Text = "скрипт для компьютеров\\script for pc",
+            Duration = math.huge,
+            Button1 = "OK",
+            Callback = function()
+                LocalPlayer:Kick("скрипт для компьютеров\\script for pc")
+            end
+        })
         return true
     end
     
