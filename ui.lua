@@ -7,8 +7,6 @@ local tween = game:GetService("TweenService")
 local tweeninfo = TweenInfo.new
 local input = game:GetService("UserInputService")
 local run = game:GetService("RunService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 
 local Utility = {}
 local Objects = {}
@@ -135,38 +133,21 @@ local SettingsT = {
 local Name = "KavoConfig.JSON"
 
 pcall(function()
-    if not pcall(function() readfile(Name) end) then
-        writefile(Name, game:service'HttpService':JSONEncode(SettingsT))
-    end
-    Settings = game:service'HttpService':JSONEncode(readfile(Name))
+
+if not pcall(function() readfile(Name) end) then
+writefile(Name, game:service'HttpService':JSONEncode(SettingsT))
+end
+
+Settings = game:service'HttpService':JSONEncode(readfile(Name))
 end)
 
 local LibName = tostring(math.random(1, 100))..tostring(math.random(1,50))..tostring(math.random(1, 100))
 
--- Функция для безопасного получения CoreGui
-local function GetCoreGui()
-    local success, result = pcall(function()
-        return game:GetService("CoreGui")
-    end)
-    if success then
-        return result
-    else
-        -- Если CoreGui недоступен, создаем ScreenGui в другом месте
-        local gui = Instance.new("ScreenGui")
-        gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-        return gui.Parent
-    end
-end
-
 function Kavo:ToggleUI()
-    if not self.ScreenGui or not self.ScreenGui.Parent then
-        return -- UI еще не создан или был уничтожен
-    end
-    
-    if self.ScreenGui.Enabled then
-        self.ScreenGui.Enabled = false
+    if game.CoreGui[LibName].Enabled then
+        game.CoreGui[LibName].Enabled = false
     else
-        self.ScreenGui.Enabled = true
+        game.CoreGui[LibName].Enabled = true
     end
 end
 
@@ -210,78 +191,20 @@ function Kavo.CreateLib(kavName, themeList)
     local selectedTab 
     kavName = kavName or "Library"
     table.insert(Kavo, kavName)
-    
-    -- Ждем пока персонаж загрузится
-    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    for i,v in pairs(game.CoreGui:GetChildren()) do
+        if v:IsA("ScreenGui") and v.Name == kavName then
+            v:Destroy()
+        end
+    end
     
     -- Создаем ScreenGui для всего интерфейса
     local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.CoreGui
     ScreenGui.Name = LibName
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.ResetOnSpawn = false
     ScreenGui.Enabled = false -- Сначала отключаем, показываем только загрузку
     
-    -- Пытаемся поместить в CoreGui, если не получается - в PlayerGui
-    local success = pcall(function()
-        ScreenGui.Parent = game:GetService("CoreGui")
-    end)
-    
-    if not success then
-        ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-    end
-    
-    -- Сохраняем ссылку на ScreenGui в объекте Kavo
-    Kavo.ScreenGui = ScreenGui
-    
-    -- Функция для пересоздания UI при смерти персонажа
-    local function recreateUI()
-        if ScreenGui and ScreenGui.Parent then
-            ScreenGui:Destroy()
-        end
-        
-        -- Повторяем процесс создания UI
-        wait(1) -- Даем время на респаун
-        
-        local newScreenGui = Instance.new("ScreenGui")
-        newScreenGui.Name = LibName
-        newScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        newScreenGui.ResetOnSpawn = false
-        newScreenGui.Enabled = true
-        
-        local success = pcall(function()
-            newScreenGui.Parent = game:GetService("CoreGui")
-        end)
-        
-        if not success then
-            newScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-        end
-        
-        Kavo.ScreenGui = newScreenGui
-        
-        -- Создаем простое сообщение вместо полной перезагрузки
-        local message = Instance.new("TextLabel")
-        message.Parent = newScreenGui
-        message.Size = UDim2.new(0, 300, 0, 50)
-        message.Position = UDim2.new(0.5, -150, 0.5, -25)
-        message.BackgroundColor3 = themeList.Header
-        message.TextColor3 = themeList.TextColor
-        message.Text = "UI перезагружен. Нажмите M для открытия меню."
-        message.Font = Enum.Font.GothamBold
-        message.TextSize = 16
-        
-        local corner = Instance.new("UICorner")
-        corner.Parent = message
-        
-        wait(3)
-        message:Destroy()
-    end
-    
-    -- Слушаем событие смерти персонажа
-    LocalPlayer.CharacterAdded:Connect(function()
-        recreateUI()
-    end)
-    
-    -- Остальной код создания UI остается таким же...
     -- Создаем экран загрузки
     local LoadingScreen = Instance.new("Frame")
     local LoadingBackground = Instance.new("Frame")
@@ -671,7 +594,7 @@ function Kavo.CreateLib(kavName, themeList)
             secName = secName or "Section"
             local sectionFunctions = {}
             local modules = {}
-            hidden = hidden or false
+        hidden = hidden or false
             local sectionFrame = Instance.new("Frame")
             local sectionlistoknvm = Instance.new("UIListLayout")
             local sectionHead = Instance.new("Frame")
@@ -680,11 +603,11 @@ function Kavo.CreateLib(kavName, themeList)
             local sectionInners = Instance.new("Frame")
             local sectionElListing = Instance.new("UIListLayout")
             
-            if hidden then
-                sectionHead.Visible = false
-            else
-                sectionHead.Visible = true
-            end
+        if hidden then
+        sectionHead.Visible = false
+        else
+        sectionHead.Visible = true
+        end
 
             sectionFrame.Name = "sectionFrame"
             sectionFrame.Parent = page
@@ -752,15 +675,15 @@ function Kavo.CreateLib(kavName, themeList)
             sectionElListing.Padding = UDim.new(0, 3)
 
             
-            coroutine.wrap(function()
-                while wait() do
-                    sectionFrame.BackgroundColor3 = themeList.Background
-                    sectionHead.BackgroundColor3 = themeList.SchemeColor
-                    tabButton.TextColor3 = themeList.TextColor
-                    tabButton.BackgroundColor3 = themeList.SchemeColor
-                    sectionName.TextColor3 = themeList.TextColor
-                end
-            end)()
+        coroutine.wrap(function()
+            while wait() do
+                sectionFrame.BackgroundColor3 = themeList.Background
+                sectionHead.BackgroundColor3 = themeList.SchemeColor
+                tabButton.TextColor3 = themeList.TextColor
+                tabButton.BackgroundColor3 = themeList.SchemeColor
+                sectionName.TextColor3 = themeList.TextColor
+            end
+        end)()
 
             local function updateSectionFrame()
                 local innerSc = sectionElListing.AbsoluteContentSize
@@ -871,7 +794,7 @@ function Kavo.CreateLib(kavName, themeList)
                 end
 
                 updateSectionFrame()
-                UpdateSize()
+                                UpdateSize()
 
                 local ms = game.Players.LocalPlayer:GetMouse()
 
@@ -1051,7 +974,7 @@ function Kavo.CreateLib(kavName, themeList)
 
 
                 updateSectionFrame()
-                UpdateSize()
+                                UpdateSize()
             
                 local btn = textboxElement
                 local infBtn = viewInfo
@@ -1138,203 +1061,203 @@ function Kavo.CreateLib(kavName, themeList)
                 end)()
             end 
 
-            function Elements:NewToggle(tname, nTip, callback)
-                local TogFunction = {}
-                tname = tname or "Toggle"
-                nTip = nTip or "Prints Current Toggle State"
-                callback = callback or function() end
-                local toggled = false
-                table.insert(SettingsT, tname)
+                function Elements:NewToggle(tname, nTip, callback)
+                    local TogFunction = {}
+                    tname = tname or "Toggle"
+                    nTip = nTip or "Prints Current Toggle State"
+                    callback = callback or function() end
+                    local toggled = false
+                    table.insert(SettingsT, tname)
 
-                local toggleElement = Instance.new("TextButton")
-                local UICorner = Instance.new("UICorner")
-                local toggleDisabled = Instance.new("ImageLabel")
-                local toggleEnabled = Instance.new("ImageLabel")
-                local togName = Instance.new("TextLabel")
-                local viewInfo = Instance.new("ImageButton")
+                    local toggleElement = Instance.new("TextButton")
+                    local UICorner = Instance.new("UICorner")
+                    local toggleDisabled = Instance.new("ImageLabel")
+                    local toggleEnabled = Instance.new("ImageLabel")
+                    local togName = Instance.new("TextLabel")
+                    local viewInfo = Instance.new("ImageButton")
 
-                toggleElement.Name = "toggleElement"
-                toggleElement.Parent = sectionInners
-                toggleElement.BackgroundColor3 = themeList.ElementColor
-                toggleElement.ClipsDescendants = true
-                toggleElement.Size = UDim2.new(0, 352, 0, 33)
-                toggleElement.AutoButtonColor = false
-                toggleElement.Font = Enum.Font.SourceSans
-                toggleElement.Text = ""
-                toggleElement.TextColor3 = Color3.fromRGB(0, 0, 0)
-                toggleElement.TextSize = 14.000
+                    toggleElement.Name = "toggleElement"
+                    toggleElement.Parent = sectionInners
+                    toggleElement.BackgroundColor3 = themeList.ElementColor
+                    toggleElement.ClipsDescendants = true
+                    toggleElement.Size = UDim2.new(0, 352, 0, 33)
+                    toggleElement.AutoButtonColor = false
+                    toggleElement.Font = Enum.Font.SourceSans
+                    toggleElement.Text = ""
+                    toggleElement.TextColor3 = Color3.fromRGB(0, 0, 0)
+                    toggleElement.TextSize = 14.000
 
-                UICorner.CornerRadius = UDim.new(0, 4)
-                UICorner.Parent = toggleElement
+                    UICorner.CornerRadius = UDim.new(0, 4)
+                    UICorner.Parent = toggleElement
 
-                toggleDisabled.Name = "toggleDisabled"
-                toggleDisabled.Parent = toggleElement
-                toggleDisabled.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                toggleDisabled.BackgroundTransparency = 1.000
-                toggleDisabled.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
-                toggleDisabled.Size = UDim2.new(0, 21, 0, 21)
-                toggleDisabled.Image = "rbxassetid://3926309567"
-                toggleDisabled.ImageColor3 = themeList.SchemeColor
-                toggleDisabled.ImageRectOffset = Vector2.new(628, 420)
-                toggleDisabled.ImageRectSize = Vector2.new(48, 48)
+                    toggleDisabled.Name = "toggleDisabled"
+                    toggleDisabled.Parent = toggleElement
+                    toggleDisabled.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    toggleDisabled.BackgroundTransparency = 1.000
+                    toggleDisabled.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
+                    toggleDisabled.Size = UDim2.new(0, 21, 0, 21)
+                    toggleDisabled.Image = "rbxassetid://3926309567"
+                    toggleDisabled.ImageColor3 = themeList.SchemeColor
+                    toggleDisabled.ImageRectOffset = Vector2.new(628, 420)
+                    toggleDisabled.ImageRectSize = Vector2.new(48, 48)
 
-                toggleEnabled.Name = "toggleEnabled"
-                toggleEnabled.Parent = toggleElement
-                toggleEnabled.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                toggleEnabled.BackgroundTransparency = 1.000
-                toggleEnabled.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
-                toggleEnabled.Size = UDim2.new(0, 21, 0, 21)
-                toggleEnabled.Image = "rbxassetid://3926309567"
-                toggleEnabled.ImageColor3 = themeList.SchemeColor
-                toggleEnabled.ImageRectOffset = Vector2.new(784, 420)
-                toggleEnabled.ImageRectSize = Vector2.new(48, 48)
-                toggleEnabled.ImageTransparency = 1.000
+                    toggleEnabled.Name = "toggleEnabled"
+                    toggleEnabled.Parent = toggleElement
+                    toggleEnabled.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    toggleEnabled.BackgroundTransparency = 1.000
+                    toggleEnabled.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
+                    toggleEnabled.Size = UDim2.new(0, 21, 0, 21)
+                    toggleEnabled.Image = "rbxassetid://3926309567"
+                    toggleEnabled.ImageColor3 = themeList.SchemeColor
+                    toggleEnabled.ImageRectOffset = Vector2.new(784, 420)
+                    toggleEnabled.ImageRectSize = Vector2.new(48, 48)
+                    toggleEnabled.ImageTransparency = 1.000
 
-                togName.Name = "togName"
-                togName.Parent = toggleElement
-                togName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                togName.BackgroundTransparency = 1.000
-                togName.Position = UDim2.new(0.096704483, 0, 0.272727281, 0)
-                togName.Size = UDim2.new(0, 288, 0, 14)
-                togName.Font = Enum.Font.GothamSemibold
-                togName.Text = tname
-                togName.RichText = true
-                togName.TextColor3 = themeList.TextColor
-                togName.TextSize = 14.000
-                togName.TextXAlignment = Enum.TextXAlignment.Left
+                    togName.Name = "togName"
+                    togName.Parent = toggleElement
+                    togName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    togName.BackgroundTransparency = 1.000
+                    togName.Position = UDim2.new(0.096704483, 0, 0.272727281, 0)
+                    togName.Size = UDim2.new(0, 288, 0, 14)
+                    togName.Font = Enum.Font.GothamSemibold
+                    togName.Text = tname
+                    togName.RichText = true
+                    togName.TextColor3 = themeList.TextColor
+                    togName.TextSize = 14.000
+                    togName.TextXAlignment = Enum.TextXAlignment.Left
 
-                viewInfo.Name = "viewInfo"
-                viewInfo.Parent = toggleElement
-                viewInfo.BackgroundTransparency = 1.000
-                viewInfo.LayoutOrder = 9
-                viewInfo.Position = UDim2.new(0.930000007, 0, 0.151999995, 0)
-                viewInfo.Size = UDim2.new(0, 23, 0, 23)
-                viewInfo.ZIndex = 2
-                viewInfo.Image = "rbxassetid://3926305904"
-                viewInfo.ImageColor3 = themeList.SchemeColor
-                viewInfo.ImageRectOffset = Vector2.new(764, 764)
-                viewInfo.ImageRectSize = Vector2.new(36, 36)
+                    viewInfo.Name = "viewInfo"
+                    viewInfo.Parent = toggleElement
+                    viewInfo.BackgroundTransparency = 1.000
+                    viewInfo.LayoutOrder = 9
+                    viewInfo.Position = UDim2.new(0.930000007, 0, 0.151999995, 0)
+                    viewInfo.Size = UDim2.new(0, 23, 0, 23)
+                    viewInfo.ZIndex = 2
+                    viewInfo.Image = "rbxassetid://3926305904"
+                    viewInfo.ImageColor3 = themeList.SchemeColor
+                    viewInfo.ImageRectOffset = Vector2.new(764, 764)
+                    viewInfo.ImageRectSize = Vector2.new(36, 36)
 
-                local moreInfo = Instance.new("TextLabel")
-                local UICorner = Instance.new("UICorner")
+                    local moreInfo = Instance.new("TextLabel")
+                    local UICorner = Instance.new("UICorner")
     
-                moreInfo.Name = "TipMore"
-                moreInfo.Parent = infoContainer
-                moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                moreInfo.Position = UDim2.new(0, 0, 2, 0)
-                moreInfo.Size = UDim2.new(0, 353, 0, 33)
-                moreInfo.ZIndex = 9
-                moreInfo.Font = Enum.Font.GothamSemibold
-                moreInfo.RichText = true
-                moreInfo.Text = "  "..nTip
-                moreInfo.TextColor3 = themeList.TextColor
-                moreInfo.TextSize = 14.000
-                moreInfo.TextXAlignment = Enum.TextXAlignment.Left
+                    moreInfo.Name = "TipMore"
+                    moreInfo.Parent = infoContainer
+                    moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
+                    moreInfo.Position = UDim2.new(0, 0, 2, 0)
+                    moreInfo.Size = UDim2.new(0, 353, 0, 33)
+                    moreInfo.ZIndex = 9
+                    moreInfo.Font = Enum.Font.GothamSemibold
+                    moreInfo.RichText = true
+                    moreInfo.Text = "  "..nTip
+                    moreInfo.TextColor3 = themeList.TextColor
+                    moreInfo.TextSize = 14.000
+                    moreInfo.TextXAlignment = Enum.TextXAlignment.Left
     
-                UICorner.CornerRadius = UDim.new(0, 4)
-                UICorner.Parent = moreInfo
+                    UICorner.CornerRadius = UDim.new(0, 4)
+                    UICorner.Parent = moreInfo
 
-                local ms = game.Players.LocalPlayer:GetMouse()
+                    local ms = game.Players.LocalPlayer:GetMouse()
 
-                if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                    Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-                end 
-                if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                    Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                end 
+                    if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+                        Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+                    end 
+                    if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+                        Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+                    end 
 
-                local btn = toggleElement
-                local img = toggleEnabled
-                local infBtn = viewInfo
+                    local btn = toggleElement
+                    local img = toggleEnabled
+                    local infBtn = viewInfo
 
-                updateSectionFrame()
+                                    updateSectionFrame()
                 UpdateSize()
 
-                btn.MouseButton1Click:Connect(function()
-                    if not focusing then
-                        if toggled == false then
-                            toggleEnabled.ImageTransparency = 0
-                            toggled = true
-                        else
-                            toggleEnabled.ImageTransparency = 1
-                            toggled = false
-                        end
-                        pcall(callback, toggled)
-                    else
-                        for i,v in next, infoContainer:GetChildren() do
-                            Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
-                            focusing = false
-                        end
-                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-                    end
-                end)
-                local hovering = false
-                btn.MouseEnter:Connect(function()
-                    if not focusing then
-                        game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                            BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 8, themeList.ElementColor.g * 255 + 9, themeList.ElementColor.b * 255 + 10)
-                        }):Play()
-                        hovering = true
-                    end 
-                end)
-                btn.MouseLeave:Connect(function()
-                    if not focusing then
-                        game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                            BackgroundColor3 = themeList.ElementColor
-                        }):Play()
-                        hovering = false
-                    end
-                end)
-
-                coroutine.wrap(function()
-                    while wait() do
-                        if not hovering then
-                            toggleElement.BackgroundColor3 = themeList.ElementColor
-                        end
-                        toggleDisabled.ImageColor3 = themeList.SchemeColor
-                        toggleEnabled.ImageColor3 = themeList.SchemeColor
-                        togName.TextColor3 = themeList.TextColor
-                        viewInfo.ImageColor3 = themeList.SchemeColor
-                        moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-                        moreInfo.TextColor3 = themeList.TextColor
-                    end
-                end)()
-                viewInfo.MouseButton1Click:Connect(function()
-                    if not viewDe then
-                        viewDe = true
-                        focusing = true
-                        for i,v in next, infoContainer:GetChildren() do
-                            if v ~= moreInfo then
-                                Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                    btn.MouseButton1Click:Connect(function()
+                        if not focusing then
+                            if toggled == false then
+                                toggleEnabled.ImageTransparency = 0
+                                toggled = true
+                            else
+                                toggleEnabled.ImageTransparency = 1
+                                toggled = false
                             end
+                            pcall(callback, toggled)
+                        else
+                            for i,v in next, infoContainer:GetChildren() do
+                                Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                                focusing = false
+                            end
+                            Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                         end
-                        Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,0,0)}, 0.2)
-                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 0.5}, 0.2)
-                        Utility:TweenObject(btn, {BackgroundColor3 = themeList.ElementColor}, 0.2)
-                        wait(1.5)
-                        focusing = false
-                        Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,2,0)}, 0.2)
-                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-                        wait(0)
-                        viewDe = false
+                    end)
+                    local hovering = false
+                    btn.MouseEnter:Connect(function()
+                        if not focusing then
+                            game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                                BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 8, themeList.ElementColor.g * 255 + 9, themeList.ElementColor.b * 255 + 10)
+                            }):Play()
+                            hovering = true
+                        end 
+                    end)
+                    btn.MouseLeave:Connect(function()
+                        if not focusing then
+                            game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                                BackgroundColor3 = themeList.ElementColor
+                            }):Play()
+                            hovering = false
+                        end
+                    end)
+
+                    coroutine.wrap(function()
+                        while wait() do
+                            if not hovering then
+                                toggleElement.BackgroundColor3 = themeList.ElementColor
+                            end
+                            toggleDisabled.ImageColor3 = themeList.SchemeColor
+                            toggleEnabled.ImageColor3 = themeList.SchemeColor
+                            togName.TextColor3 = themeList.TextColor
+                            viewInfo.ImageColor3 = themeList.SchemeColor
+                            moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
+                            moreInfo.TextColor3 = themeList.TextColor
+                        end
+                    end)()
+                    viewInfo.MouseButton1Click:Connect(function()
+                        if not viewDe then
+                            viewDe = true
+                            focusing = true
+                            for i,v in next, infoContainer:GetChildren() do
+                                if v ~= moreInfo then
+                                    Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                                end
+                            end
+                            Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,0,0)}, 0.2)
+                            Utility:TweenObject(blurFrame, {BackgroundTransparency = 0.5}, 0.2)
+                            Utility:TweenObject(btn, {BackgroundColor3 = themeList.ElementColor}, 0.2)
+                            wait(1.5)
+                            focusing = false
+                            Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                            Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
+                            wait(0)
+                            viewDe = false
+                        end
+                    end)
+                    function TogFunction:UpdateToggle(newText, isTogOn)
+                        isTogOn = isTogOn or toggle
+                        if newText ~= nil then 
+                            togName.Text = newText
+                        end
+                        if isTogOn then
+                            toggled = true
+                            toggleEnabled.ImageTransparency = 0
+                            pcall(callback, toggled)
+                        else
+                            toggled = false
+                            toggleEnabled.ImageTransparency = 1
+                            pcall(callback, toggled)
+                        end
                     end
-                end)
-                function TogFunction:UpdateToggle(newText, isTogOn)
-                    isTogOn = isTogOn or toggle
-                    if newText ~= nil then 
-                        togName.Text = newText
-                    end
-                    if isTogOn then
-                        toggled = true
-                        toggleEnabled.ImageTransparency = 0
-                        pcall(callback, toggled)
-                    else
-                        toggled = false
-                        toggleEnabled.ImageTransparency = 1
-                        pcall(callback, toggled)
-                    end
-                end
-                return TogFunction
+                    return TogFunction
             end
 
             function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, callback)
@@ -1475,7 +1398,7 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
 
 
-                updateSectionFrame()
+                                updateSectionFrame()
                 UpdateSize()
                 local mouse = game:GetService("Players").LocalPlayer:GetMouse();
 
@@ -1875,8 +1798,8 @@ function Kavo.CreateLib(kavName, themeList)
                                 Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                             end
                         end)
-                        updateSectionFrame()
-                        UpdateSize()
+                                        updateSectionFrame()
+                UpdateSize()
                         local hov = false
                         optionSelect.MouseEnter:Connect(function()
                             if not focusing then
@@ -2029,7 +1952,7 @@ function Kavo.CreateLib(kavName, themeList)
                         viewDe = false
                     end
                 end)  
-                updateSectionFrame()
+                                updateSectionFrame()
                 UpdateSize()
                 local oHover = false
                 keybindElement.MouseEnter:Connect(function()
